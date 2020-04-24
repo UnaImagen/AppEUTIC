@@ -21,9 +21,22 @@ eutic %>%
    # ) %>%
    dplyr::transmute(
       nper = dplyr::row_number(),
-      peso = base::as.integer(peso.per),
+      peso_persona = base::as.integer(peso.per),
+      peso_hogar = base::as.integer(peso.hog),
       sexo = forcats::as_factor(p12),
       edad = base::as.integer(p13),
+      depto = forcats::as_factor(dpto),
+      nivel_educ = forcats::as_factor(edudesag_eutic),
+      nivel_educ = forcats::fct_relevel(
+         .f = nivel_educ,
+         "Sin instrucción o Primaria o menos",
+         "Secundaria",
+         "Terciario"
+      ),
+      nivel_educ = forcats::fct_recode(
+         .f = nivel_educ,
+         "Primaria o menos" = "Sin instrucción o Primaria o menos"
+      ),
 
       ## Uso de celular
       uso_celular_comun = forcats::as_factor(p23),
@@ -66,10 +79,21 @@ eutic %>%
 
    )
 
+eutic %>%
+   select(
+      id,
+      nper,
+      pernro,
+      edudesag,
+      edudesag_eutic
+   ) %>%
+   tail()
+max(eutic$id)
+
 xtabs(~p23 + p23_1, data = eutic, addNA = TRUE)
 table(eutic$p40, useNA = "always")
-levels(.Last.value$frecuencia_uso_internet)
-
+levels(.Last.value$nivel_educ)
+table(eutic$edudesag)
 x %>%
    group_by(
       uso_smart_phone
