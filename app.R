@@ -27,64 +27,39 @@ ui <- shiny::tagList(
 
             shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
 
-            shiny::selectInput(
-               inputId = "localidad",
-               label = "Localidad:",
-               choices = base::levels(eutic$localidad),
-               selected = base::levels(eutic$localidad),
-               multiple = TRUE
-            ),
+            # shiny::selectInput(
+            #    inputId = "localidad",
+            #    label = "Localidad:",
+            #    choices = base::levels(eutic$localidad),
+            #    selected = base::levels(eutic$localidad),
+            #    multiple = TRUE
+            # ),
 
             shiny::selectInput(
                inputId = "ingresos",
                label = "Nivel de ingresos del hogar:",
-               choices = base::levels(eutic$ingresos),
-               selected = base::levels(eutic$ingresos),
+               choices = base::levels(eutic$ingresos_total),
+               selected = base::levels(eutic$ingresos_total),
                multiple = TRUE
             ),
 
-            shiny::strong("Hogares que tengan:"),
-
-            shiny::checkboxInput(
-               inputId = "tienen_desktop",
-               label = "Desktop",
-               value = TRUE
-            ),
-
-            shiny::checkboxInput(
-               inputId = "tienen_laptop",
-               label = "Laptop",
-               value = TRUE
-            ),
-
-            shiny::checkboxInput(
-               inputId = "tienen_tablet",
-               label = "Tablet",
-               value = TRUE
-            ),
-
             shiny::selectInput(
-               inputId = "condicion",
-               label = "Condición:",
-               choices = base::c("Todas las seleccionadas", "Al menos una de las seleccionadas"),
-               selected = "Al menos una de las seleccionadas",
-               multiple = FALSE
+               inputId = "hogares_que_tienen",
+               label = "Hogares que tengan:",
+               choices = base::c("Desktop", "Laptop", "Tablet", "Internet"),
+               selected = "Desktop"
             ),
 
             shiny::p("Fuente: Instituto Nacional de Estadística"),
 
             shiny::p("Nota: el nivel de ingresos se presenta por quintil, donde Q5 son los hogares de mayores ingresos, y Q1 son los hogares de
-                     menores ingresos."),
+                     menores ingresos del país."),
 
          ),
 
          shiny::mainPanel(
 
-            shiny::verbatimTextOutput("tienen_desktop"),
-            shiny::verbatimTextOutput("tienen_laptop"),
-            shiny::verbatimTextOutput("tienen_tablet"),
-
-            shiny::verbatimTextOutput("que_tienen")
+            plotly::plotlyOutput(outputId = "hogares")
 
          )
 
@@ -97,32 +72,88 @@ ui <- shiny::tagList(
 # Server ------------------------------------------------------------------
 server <- function(input, output) {
 
-   tienen_
+   # Funciones ---------------------------------------------------------------
 
-   output$tienen_desktop <- shiny::renderText({
-      dplyr::case_when(
-         input$tienen_desktop == TRUE ~ "tiene_desktop",
-         TRUE ~ ""
+   plotly_hogares_tienen <- function(tienen) {
+
+      legend_title <- dplyr::case_when(
+         tienen == "tiene_desktop" ~ "¿Tiene desktop en el hogar?",
+         tienen == "tiene_laptop" ~ "¿Tiene laptop en el hogar?",
+         tienen == "tiene_tablet" ~ "¿Tiene tablet en el hogar?",
+         tienen == "tiene_internet" ~ "¿Tiene internet en el hogar?"
       )
+
+      eutic %>%
+         dplyr::filter(
+            ingresos_total %in% input$ingresos
+         ) %>%
+         dplyr::transmute(
+            localidad,
+            tiene = !!rlang::sym(tienen),
+            peso_hogar
+         ) %>%
+         dplyr::group_by(
+            localidad,
+            tiene
+         ) %>%
+         dplyr::summarise(
+            n = base::sum(peso_hogar)
+         ) %>%
+         dplyr::mutate(
+            prop = n / base::sum(n)
+         ) %>%
+         plotly::plot_ly() %>%
+         plotly::add_trace(
+            x = ~localidad,
+            y = ~prop,
+            color = ~tiene,
+            type = "bar",
+            hovertemplate = ~paste0(
+               "%{y:0.2%}"
+            )
+         ) %>%
+         plotly::layout(
+            xaxis = base::list(
+               title = NA
+            ),
+            yaxis = base::list(
+               title = "<b>Porcentaje de los hogares</b>",
+               tickformat = "%"
+            ),
+            legend = base::list(
+               title = base::list(
+                  text = base::paste("<b>", legend_title, "</b>")
+               ),
+               bgcolor = "#E2E2E2",
+               orientation = "h",
+               yanchor = "bottom",
+               xanchor = "left",
+               y = -.40
+            )
+         ) %>%
+         plotly::config(
+            locale = "es",
+            displayModeBar = TRUE
+         )
+
+   }
+
+   # Tab hogares -------------------------------------------------------------
+
+   var_hogar_tiene <- shiny::reactive({
+
+      dplyr::case_when(
+         input$hogares_que_tienen == "Desktop" ~ "tiene_desktop",
+         input$hogares_que_tienen == "Laptop" ~ "tiene_laptop",
+         input$hogares_que_tienen == "Tablet" ~ "tiene_tablet",
+         input$hogares_que_tienen == "Internet" ~ "tiene_internet",
+      )
+
    })
 
-   output$tienen_laptop <- shiny::renderText({
-      dplyr::case_when(
-         input$tienen_laptop == TRUE ~ "tiene_laptop",
-         TRUE ~ ""
-      )
-   })
+   output$hogares <- plotly::renderPlotly({
 
-   output$tienen_tablet <- shiny::renderText({
-      dplyr::case_when(
-         input$tienen_tablet == TRUE ~ "tiene_tablet",
-         TRUE ~ ""
-      )
-   })
-
-   output$que_tienen <- shiny::reactive({
-
-      stringr::str_c(output$tienen_desktop)
+      plotly_hogares_tienen(var_hogar_tiene())
 
    })
 
