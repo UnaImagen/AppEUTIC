@@ -4,38 +4,6 @@
 
 library(magrittr)
 
-# Genera shape file para mapas en el App ----------------------------------
-mapa <- sf::read_sf(here::here("IneShapeFiles/ine_depto.shp"))
-mapa <- sf::st_set_crs(mapa, "+proj=utm +zone=21 +south")
-mapa <- sf::st_transform(mapa, "+proj=longlat +datum=WGS84")
-mapa <- mapa[, base::c(4, 6)]
-mapa <- mapa[-16,]
-mapa$NOMBRE <- base::c(
-   "Montevideo",
-   "Artigas",
-   "Canelones",
-   "Colonia",
-   "Durazno",
-   "Florida",
-   "Lavalleja",
-   "Paysandú",
-   "Río Negro",
-   "Rivera",
-   "Rocha",
-   "Salto",
-   "San José",
-   "Soriano",
-   "Treinta y Tres",
-   "Tacuarembó",
-   "Flores",
-   "Maldonado",
-   "Cerro Largo"
-)
-base::colnames(mapa) <- base::c("depto", "geometry")
-
-sf::st_write(obj = mapa, dsn = here::here("www/mapa.shp"), append = FALSE)
-
-
 # Carga datos -------------------------------------------------------------
 eutic <- haven::read_sav(
    file = here::here("BASE HOGARES Y PERSONAS EUTIC 2016.sav")
@@ -56,7 +24,12 @@ x <- eutic %>%
       peso_hogar = base::as.integer(peso.hog),
       sexo = forcats::as_factor(p12),
       edad = base::as.integer(p13),
-      depto = forcats::as_factor(dpto),
+      localidad = forcats::as_factor(dpto),
+      localidad = forcats::fct_collapse(
+         .f = localidad,
+         Montevideo = "Montevideo",
+         other_level = "Interior"
+      ),
       nivel_educ = forcats::as_factor(edudesag_eutic),
       nivel_educ = forcats::fct_relevel(
          .f = nivel_educ,
@@ -134,9 +107,9 @@ x <- eutic %>%
 
    )
 
-aux_data <- x %>%
+x %>%
    dplyr::group_by(
-      depto,
+      localidad,
       tiene_desktop
    ) %>%
    dplyr::summarise(
@@ -144,71 +117,6 @@ aux_data <- x %>%
    ) %>%
    dplyr::mutate(
       prop = n / base::sum(n)
-   ) %>%
-   dplyr::filter(
-      tiene_desktop == "Sí"
-   ) %>%
-   dplyr::select(
-      depto,
-      prop
-   ) %>%
-   dplyr::ungroup() %>%
-   dplyr::mutate(
-      depto = base::as.character(depto)
-   )
-
-pal <- leaflet::colorNumeric(
-   palette = "Greens",
-   domain = aux_data$prop
-   )
-
-mapa$depto == aux_data$depto
-length(mapa$depto)
-length(aux_data$depto)
-mapa_aux <- base::merge(mapa, aux_data, by = "depto")
-
-leaflet::leaflet(
-   data = mapa_aux
-) %>%
-   leaflet::addTiles() %>%
-   leaflet::setView(
-      lng = -56.1,
-      lat =  -32,
-      zoom = 7
-   ) %>%
-   leaflet::addPolygons(
-      fillColor = ~pal(prop),
-      weight = 2,
-      opacity = 1,
-      color = "white",
-      dashArray = "3",
-      fillOpacity = 0.7,
-      highlight = leaflet::highlightOptions(
-         weight = 5,
-         color = "#666",
-         dashArray = "",
-         fillOpacity = 0.7,
-         bringToFront = TRUE
-      ),
-      label = base::paste0(
-         depto,
-         ": ",
-         formattable::comma(
-            x = mapa_aux$prop,
-            digits = 0L,
-            big.mark = ".",
-            decimal.mark = ","
-         ),
-         " dólares"
-      ),
-      labelOptions = leaflet::labelOptions(
-         style = base::list(
-            "font-weight" = "normal",
-            padding = "3px 8px"
-         ),
-         textsize = "15px",
-         direction = "auto"
-      )
    )
 
 #===============#
