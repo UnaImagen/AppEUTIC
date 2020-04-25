@@ -13,6 +13,55 @@ eutic <- haven::read_sav(
    )
 
 
+# Tipos de conexión -------------------------------------------------------
+tipo_internet <- eutic %>%
+   dplyr::transmute(
+      nper = dplyr::row_number(),
+      peso_hogar = base::as.integer(peso.hog),
+      h9,
+      h10_1_1,
+      h10_1_2,
+      h10_1_3,
+      h10_1_4,
+      h10_1_5,
+      h10_1_6
+   ) %>%
+   dplyr::mutate_at(
+      .vars = dplyr::vars(tidyselect::starts_with("h")),
+      .funs = ~forcats::as_factor(.)
+   ) %>%
+   dplyr::mutate_at(
+      .vars = dplyr::vars(tidyselect::starts_with("h10_")),
+      .funs = ~forcats::fct_recode(
+         .f = .,
+         "No tiene internet" = "0"
+      )
+   ) %>%
+   tidyr::pivot_longer(
+      cols = tidyselect::starts_with("h10_1_"),
+      names_to = "tipo_internet",
+      values_to = "value"
+   ) %>%
+   dplyr::filter(
+      (h9 == "Sí" & value != "No") | (h9 == "No" & tipo_internet == "h10_1_1")
+   ) %>%
+   dplyr::transmute(
+      nper,
+      tiene_internet = h9,
+      tipo_internet = dplyr::if_else(h9 == "No", NA_character_, tipo_internet),
+      tipo_internet = dplyr::case_when(
+         tipo_internet == "h10_1_1" ~ "Línea discada",
+         tipo_internet == "h10_1_2" ~ "Banda ancha fija",
+         tipo_internet == "h10_1_3" ~ "Plan Ceibal",
+         tipo_internet == "h10_1_4" ~ "Banda ancha móvil",
+         tipo_internet == "h10_1_5" ~ "Se cuelga",
+         tipo_internet == "h10_1_6" ~ "Otro",
+         TRUE ~ "No tiene internet"
+      )
+   )
+
+readr::write_rds(x = tipo_internet, path = "tipo_internet.rds")
+
 # Construye objeto para el App --------------------------------------------
 eutic %<>%
    dplyr::transmute(
