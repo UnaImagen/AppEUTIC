@@ -3,7 +3,38 @@
 #=============#
 
 library(magrittr)
-library(tidyverse)
+
+# Genera shape file para mapas en el App ----------------------------------
+mapa <- sf::read_sf(here::here("IneShapeFiles/ine_depto.shp"))
+mapa <- sf::st_set_crs(mapa, "+proj=utm +zone=21 +south")
+mapa <- sf::st_transform(mapa, "+proj=longlat +datum=WGS84")
+mapa <- mapa[, base::c(4, 6)]
+mapa <- mapa[-16,]
+mapa$NOMBRE <- base::c(
+   "Montevideo",
+   "Artigas",
+   "Canelones",
+   "Colonia",
+   "Durazno",
+   "Florida",
+   "Lavalleja",
+   "Paysandú",
+   "Río Negro",
+   "Rivera",
+   "Rocha",
+   "Salto",
+   "San José",
+   "Soriano",
+   "Treinta y Tres",
+   "Tacuarembó",
+   "Flores",
+   "Maldonado",
+   "Cerro Largo"
+)
+base::colnames(mapa) <- base::c("depto", "geometry")
+
+sf::st_write(obj = mapa, dsn = here::here("www/mapa.shp"), append = FALSE)
+
 
 # Carga datos -------------------------------------------------------------
 eutic <- haven::read_sav(
@@ -15,7 +46,7 @@ eutic <- haven::read_sav(
 
 
 # Construye objeto para el App --------------------------------------------
-eutic %>%
+x <- eutic %>%
    # filter(
    #    p23_1 == 3
    # ) %>%
@@ -40,13 +71,22 @@ eutic %>%
 
       ## Tenencia en el hogar: desktop
       tiene_desktop = forcats::as_factor(h6_1),
+      tiene_desktop = forcats::fct_collapse(
+         .f = tiene_desktop,
+         No = base::c("No", "0")
+      ),
       cantidad_desktop = base::as.integer(h6_1_1),
 
       ## Tenencia en el hogar: laptop
       tiene_laptop = forcats::as_factor(h6_2),
+      tiene_laptop = forcats::fct_collapse(
+         .f = tiene_laptop,
+         No = base::c("No", "0")
+      ),
       cantidad_laptop = base::as.integer(h6_2_1),
 
       ## Tenencia en el hogar: tablet
+      tiene_tablet = dplyr::if_else(h6_3 == 1, "Sí", "No"),
       tiene_tablet = forcats::as_factor(h6_3),
       cantidad_tablet = base::as.integer(h6_3_1),
 
@@ -94,31 +134,82 @@ eutic %>%
 
    )
 
-eutic %>%
-   select(
-      id,
-      nper,
-      pernro,
-      edudesag,
-      edudesag_eutic
+aux_data <- x %>%
+   dplyr::group_by(
+      depto,
+      tiene_desktop
    ) %>%
-   tail()
-max(eutic$id)
+   dplyr::summarise(
+      n = base::sum(peso_hogar)
+   ) %>%
+   dplyr::mutate(
+      prop = n / base::sum(n)
+   ) %>%
+   dplyr::filter(
+      tiene_desktop == "Sí"
+   ) %>%
+   dplyr::select(
+      depto,
+      prop
+   ) %>%
+   dplyr::ungroup() %>%
+   dplyr::mutate(
+      depto = base::as.character(depto)
+   )
 
-xtabs(~p23 + p23_1, data = eutic, addNA = TRUE)
-table(eutic$p40, useNA = "always")
-levels(.Last.value$nivel_educ)
-table(eutic$edudesag)
-x %>%
-   group_by(
-      uso_smart_phone
+pal <- leaflet::colorNumeric(
+   palette = "Greens",
+   domain = aux_data$prop
+   )
+
+mapa$depto == aux_data$depto
+length(mapa$depto)
+length(aux_data$depto)
+mapa_aux <- base::merge(mapa, aux_data, by = "depto")
+
+leaflet::leaflet(
+   data = mapa_aux
+) %>%
+   leaflet::addTiles() %>%
+   leaflet::setView(
+      lng = -56.1,
+      lat =  -32,
+      zoom = 7
    ) %>%
-   tally() %>%
-   plotly::plot_ly(
-   x = ~uso_smart_phone,
-   y = ~n,
-   type = "bar"
-)
+   leaflet::addPolygons(
+      fillColor = ~pal(prop),
+      weight = 2,
+      opacity = 1,
+      color = "white",
+      dashArray = "3",
+      fillOpacity = 0.7,
+      highlight = leaflet::highlightOptions(
+         weight = 5,
+         color = "#666",
+         dashArray = "",
+         fillOpacity = 0.7,
+         bringToFront = TRUE
+      ),
+      label = base::paste0(
+         depto,
+         ": ",
+         formattable::comma(
+            x = mapa_aux$prop,
+            digits = 0L,
+            big.mark = ".",
+            decimal.mark = ","
+         ),
+         " dólares"
+      ),
+      labelOptions = leaflet::labelOptions(
+         style = base::list(
+            "font-weight" = "normal",
+            padding = "3px 8px"
+         ),
+         textsize = "15px",
+         direction = "auto"
+      )
+   )
 
 #===============#
 #### THE END ####
