@@ -38,9 +38,14 @@ eutic %<>%
          .f = nivel_educ,
          "Primaria o menos" = "Sin instrucción o Primaria o menos"
       ),
-      ingresos = forcats::as_factor(quintil_total),
-      ingresos = forcats::fct_relabel(
-         .f = ingresos,
+      ingresos_total = forcats::as_factor(quintil_total),
+      ingresos_total = forcats::fct_relabel(
+         .f = ingresos_total,
+         .fun = ~stringr::str_c("Q", .)
+      ),
+      ingresos_regional = forcats::as_factor(quintil_regional),
+      ingresos_regional = forcats::fct_relabel(
+         .f = ingresos_regional,
          .fun = ~stringr::str_c("Q", .)
       ),
 
@@ -66,7 +71,7 @@ eutic %<>%
       cantidad_tablet = base::as.integer(h6_3_1),
 
       ## Conexión a internet
-      conexion_internet_en_el_hogar = forcats::as_factor(h9),
+      tiene_internet = forcats::as_factor(h9),
 
       ## Uso de celular
       uso_celular_comun = forcats::as_factor(p23),
@@ -110,30 +115,6 @@ eutic %<>%
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
-
-detect_desktop <- "Sí"
-detect_laptop <- "Sí"
-detect_tablet <- "Sí"
-detect_condition <- stringr::str_c(detect_desktop, detect_laptop, detect_tablet, sep = ":")
-
-x %>%
-   dplyr::transmute(
-      localidad,
-      ingresos,
-      tiene = forcats::fct_cross(tiene_desktop, tiene_laptop, tiene_tablet, sep = ":"),
-      tiene = dplyr::if_else(stringr::str_detect(tiene, "Sí"), TRUE, FALSE),
-      peso_hogar
-   ) %>%
-   dplyr::group_by(
-      # localidad,
-      tiene
-   ) %>%
-   dplyr::summarise(
-      n = base::sum(peso_hogar)
-   ) %>%
-   dplyr::mutate(
-      prop = n / base::sum(n)
-   )
 
 #===============#
 #### THE END ####
