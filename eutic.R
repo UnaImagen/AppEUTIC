@@ -38,6 +38,21 @@ eutic %>%
          "Primaria o menos" = "Sin instrucción o Primaria o menos"
       ),
 
+      ## Tenencia en el hogar: desktop
+      tiene_desktop = forcats::as_factor(h6_1),
+      cantidad_desktop = base::as.integer(h6_1_1),
+
+      ## Tenencia en el hogar: laptop
+      tiene_laptop = forcats::as_factor(h6_2),
+      cantidad_laptop = base::as.integer(h6_2_1),
+
+      ## Tenencia en el hogar: tablet
+      tiene_tablet = forcats::as_factor(h6_3),
+      cantidad_tablet = base::as.integer(h6_3_1),
+
+      ## Conexión a internet
+      conexion_internet_en_el_hogar = forcats::as_factor(h9),
+
       ## Uso de celular
       uso_celular_comun = forcats::as_factor(p23),
       uso_smart_phone = forcats::as_factor(p23_1),
