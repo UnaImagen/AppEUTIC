@@ -14,10 +14,7 @@ eutic <- haven::read_sav(
 
 
 # Construye objeto para el App --------------------------------------------
-x <- eutic %>%
-   # filter(
-   #    p23_1 == 3
-   # ) %>%
+eutic %<>%
    dplyr::transmute(
       nper = dplyr::row_number(),
       peso_persona = base::as.integer(peso.per),
@@ -41,6 +38,11 @@ x <- eutic %>%
          .f = nivel_educ,
          "Primaria o menos" = "Sin instrucción o Primaria o menos"
       ),
+      ingresos = forcats::as_factor(quintil_total),
+      ingresos = forcats::fct_relabel(
+         .f = ingresos,
+         .fun = ~stringr::str_c("Q", .)
+      ),
 
       ## Tenencia en el hogar: desktop
       tiene_desktop = forcats::as_factor(h6_1),
@@ -60,7 +62,7 @@ x <- eutic %>%
 
       ## Tenencia en el hogar: tablet
       tiene_tablet = dplyr::if_else(h6_3 == 1, "Sí", "No"),
-      tiene_tablet = forcats::as_factor(h6_3),
+      tiene_tablet = forcats::as_factor(tiene_tablet),
       cantidad_tablet = base::as.integer(h6_3_1),
 
       ## Conexión a internet
@@ -107,10 +109,24 @@ x <- eutic %>%
 
    )
 
+readr::write_rds(x = eutic, path = "eutic.rds")
+
+detect_desktop <- "Sí"
+detect_laptop <- "Sí"
+detect_tablet <- "Sí"
+detect_condition <- stringr::str_c(detect_desktop, detect_laptop, detect_tablet, sep = ":")
+
 x %>%
-   dplyr::group_by(
+   dplyr::transmute(
       localidad,
-      tiene_desktop
+      ingresos,
+      tiene = forcats::fct_cross(tiene_desktop, tiene_laptop, tiene_tablet, sep = ":"),
+      tiene = dplyr::if_else(stringr::str_detect(tiene, "Sí"), TRUE, FALSE),
+      peso_hogar
+   ) %>%
+   dplyr::group_by(
+      # localidad,
+      tiene
    ) %>%
    dplyr::summarise(
       n = base::sum(peso_hogar)
