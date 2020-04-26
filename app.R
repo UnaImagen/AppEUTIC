@@ -247,18 +247,22 @@ server <- function(input, output) {
 
    plotly_hogares_cantidad <- function(.data, group_var_1, group_var_2, filter_var = group_var_2) {
 
-      legend_title <- dplyr::case_when(
+      xaxis_title <- dplyr::case_when(
          group_var_1 == "localidad" ~ "Localidad",
          group_var_1 == "ingresos_total" ~ "Nivel de ingresos"
       )
 
-      xaxis_title <- dplyr::case_when(
+      legend_title <- dplyr::case_when(
          group_var_2 == "tiene_desktop" ~ "Cantidad de desktops en el hogar<br>(para hogares que tienen)",
          group_var_2 == "tiene_laptop" ~ "Cantidad de laptops en el hogar<br>(para hogares que tienen)",
          group_var_2 == "tiene_tablet" ~ "Cantidad de tablets en el hogar<br>(para hogares que tienen)"
       )
 
       .data %>%
+         dplyr::filter(
+            !!rlang::sym(filter_var) == "Sí"
+         ) %>%
+         base::droplevels() %>%
          dplyr::mutate(
             group_var_1 = !!rlang::sym(group_var_1),
             group_var_2 = !!rlang::sym(
@@ -267,11 +271,7 @@ server <- function(input, output) {
                   pattern = "tiene",
                   replacement = "cantidad"
                )
-            ),
-            filter_var = !!rlang::sym(filter_var)
-         ) %>%
-         dplyr::filter(
-            filter_var == "Sí"
+            )
          ) %>%
          dplyr::group_by(
             group_var_1,
@@ -286,9 +286,9 @@ server <- function(input, output) {
          dplyr::ungroup() %>%
          plotly::plot_ly() %>%
          plotly::add_trace(
-            x = ~group_var_2,
+            x = ~group_var_1,
             y = ~prop,
-            color = ~group_var_1,
+            color = ~group_var_2,
             colors = "Accent",
             type = "bar",
             hovertemplate = ~base::paste0(
@@ -443,13 +443,13 @@ server <- function(input, output) {
             ),
             legend = base::list(
                title = base::list(
-                  text = base::paste("<b>", "Tipo de conexión", "</b>")
+                  text = base::paste("<b>", "Tipo de conexión<br>(para hogares que tienen)", "</b>")
                ),
                bgcolor = "#E2E2E2",
                orientation = "h",
                yanchor = "bottom",
                xanchor = "left",
-               y = -.35
+               y = -.40
             ),
             hovermode = "x"
          ) %>%
