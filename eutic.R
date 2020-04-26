@@ -18,6 +18,17 @@ tipo_internet <- eutic %>%
    dplyr::transmute(
       nper = dplyr::row_number(),
       peso_hogar = base::as.integer(peso.hog),
+      localidad = forcats::as_factor(dpto),
+      localidad = forcats::fct_collapse(
+         .f = localidad,
+         Montevideo = "Montevideo",
+         other_level = "Interior"
+      ),
+      ingresos_total = forcats::as_factor(quintil_total),
+      ingresos_total = forcats::fct_relabel(
+         .f = ingresos_total,
+         .fun = ~stringr::str_c("Q", .)
+      ),
       h9,
       h10_1_1,
       h10_1_2,
@@ -46,7 +57,8 @@ tipo_internet <- eutic %>%
       (h9 == "Sí" & value != "No") | (h9 == "No" & tipo_internet == "h10_1_1")
    ) %>%
    dplyr::transmute(
-      nper,
+      localidad,
+      ingresos_total,
       tiene_internet = h9,
       tipo_internet = dplyr::if_else(h9 == "No", NA_character_, tipo_internet),
       tipo_internet = dplyr::case_when(
@@ -57,12 +69,14 @@ tipo_internet <- eutic %>%
          tipo_internet == "h10_1_5" ~ "Se cuelga",
          tipo_internet == "h10_1_6" ~ "Otro",
          TRUE ~ "No tiene internet"
-      )
+      ),
+      peso_hogar
    )
 
 readr::write_rds(x = tipo_internet, path = "tipo_internet.rds")
 
-# Construye objeto para el App --------------------------------------------
+
+# EUTIC -------------------------------------------------------------------
 eutic %<>%
    dplyr::transmute(
       nper = dplyr::row_number(),
@@ -185,6 +199,9 @@ eutic %<>%
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
+
+
+tipo_internet
 
 #===============#
 #### THE END ####
