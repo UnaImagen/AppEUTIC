@@ -79,72 +79,78 @@ ui <- shiny::tagList(
 
             shiny::p("Fuente: Instituto Nacional de Estadística"),
 
-            shiny::p("Nota: el nivel de ingresos se presenta por quintil, donde Q5 son los hogares de mayores ingresos, y Q1 son los hogares de
-                     menores ingresos del país.")
+            shiny::p(
+               "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
+               los hogares de menores ingresos del país."
+            )
 
          ),
 
          shiny::mainPanel(
 
-            plotly::plotlyOutput(outputId = "plotly_hogares_dispositivos")
+            plotly::plotlyOutput(outputId = "plotly_hogares_dispositivos"),
+
+            plotly::plotlyOutput(outputId = "plotly_cantidad_dispositivos_hogar")
+
+         )
+
+      ),
+
+      # Tab: Hogares - Internet -------------------------------------------------
+      shiny::tabPanel(
+
+         title = "Hogares - Internet",
+
+         shiny::sidebarPanel(
+
+            shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
+
+            # shiny::selectInput(
+            #    inputId = "hogares_que_tienen_internet",
+            #    label = "Hogares que tengan:",
+            #    choices = base::c("Internet"),
+            #    selected = "Internet"
+            # ),
+            #
+            # shiny::selectInput(
+            #    inputId = "resultados_por",
+            #    label = "Graficar según:",
+            #    choices = base::c("Nivel de ingresos", "Localidad"),
+            #    selected = "Localidad"
+            # ),
+            #
+            # shiny::selectInput(
+            #    inputId = "localidad",
+            #    label = "Localidad:",
+            #    choices = base::levels(eutic$localidad),
+            #    selected = base::levels(eutic$localidad),
+            #    multiple = TRUE
+            # ),
+            #
+            # shiny::selectInput(
+            #    inputId = "ingresos",
+            #    label = "Nivel de ingresos del hogar:",
+            #    choices = base::levels(eutic$ingresos_total),
+            #    selected = base::levels(eutic$ingresos_total),
+            #    multiple = TRUE
+            # ),
+
+            shiny::p("Fuente: Instituto Nacional de Estadística"),
+
+            shiny::p(
+               "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
+               los hogares de menores ingresos del país."
+            )
+
+         ),
+
+         shiny::mainPanel(
+
+            # plotly::plotlyOutput(outputId = "hogares_internet")
 
          )
 
       )
-
-      # Tab: Hogares - Internet -------------------------------------------------
-      # shiny::tabPanel(
-      #
-      #    title = "Hogares - Internet",
-      #
-      #    shiny::sidebarPanel(
-      #
-      #       shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
-      #
-      #       shiny::selectInput(
-      #          inputId = "hogares_que_tienen_internet",
-      #          label = "Hogares que tengan:",
-      #          choices = base::c("Internet"),
-      #          selected = "Internet"
-      #       ),
-      #
-      #       shiny::selectInput(
-      #          inputId = "resultados_por",
-      #          label = "Graficar según:",
-      #          choices = base::c("Nivel de ingresos", "Localidad"),
-      #          selected = "Localidad"
-      #       ),
-      #
-      #       shiny::selectInput(
-      #          inputId = "localidad",
-      #          label = "Localidad:",
-      #          choices = base::levels(eutic$localidad),
-      #          selected = base::levels(eutic$localidad),
-      #          multiple = TRUE
-      #       ),
-      #
-      #       shiny::selectInput(
-      #          inputId = "ingresos",
-      #          label = "Nivel de ingresos del hogar:",
-      #          choices = base::levels(eutic$ingresos_total),
-      #          selected = base::levels(eutic$ingresos_total),
-      #          multiple = TRUE
-      #       ),
-      #
-      #       shiny::p("Fuente: Instituto Nacional de Estadística"),
-      #
-      #       shiny::p("Nota: el nivel de ingresos se presenta por quintil, donde Q5 son los hogares de mayores ingresos, y Q1 son los hogares de
-      #                menores ingresos del país."),
-      #
-      #    ),
-      #
-      #    shiny::mainPanel(
-      #
-      #       plotly::plotlyOutput(outputId = "hogares_internet")
-      #
-      #    )
-      #
-      # )
 
    )
 
@@ -157,11 +163,15 @@ server <- function(input, output) {
 
    plotly_hogares_tienen <- function(.data, group_var_1, group_var_2) {
 
+      xaxis_title <- dplyr::case_when(
+         group_var_1 == "localidad" ~ "Localidad",
+         group_var_1 == "ingresos_total" ~ "Nivel de ingresos"
+      )
+
       legend_title <- dplyr::case_when(
          group_var_2 == "tiene_desktop" ~ "¿Tiene desktop en el hogar?",
          group_var_2 == "tiene_laptop" ~ "¿Tiene laptop en el hogar?",
-         group_var_2 == "tiene_tablet" ~ "¿Tiene tablet en el hogar?",
-         group_var_2 == "tiene_internet" ~ "¿Tiene internet en el hogar?"
+         group_var_2 == "tiene_tablet" ~ "¿Tiene tablet en el hogar?"
       )
 
       .data %>%
@@ -175,10 +185,10 @@ server <- function(input, output) {
             group_var_2
          ) %>%
          dplyr::summarise(
-            n = base::sum(peso_hogar)
+            n = base::sum(peso_hogar, na.rm = TRUE)
          ) %>%
          dplyr::mutate(
-            proporcion = n / base::sum(n)
+            proporcion = n / base::sum(n, na.rm = TRUE)
          ) %>%
          dplyr::ungroup() %>%
          plotly::plot_ly() %>%
@@ -186,6 +196,7 @@ server <- function(input, output) {
             x = ~group_var_1,
             y = ~proporcion,
             color = ~group_var_2,
+            colors = "Paired",
             type = "bar",
             hovertemplate = ~base::paste0(
                "%{y:0.2%}"
@@ -193,7 +204,7 @@ server <- function(input, output) {
          ) %>%
          plotly::layout(
             xaxis = base::list(
-               title = NA
+               title = base::paste("<b>", xaxis_title, "</b>")
             ),
             yaxis = base::list(
                title = "<b>Porcentaje de los hogares</b>",
@@ -218,6 +229,82 @@ server <- function(input, output) {
 
    }
 
+   plotly_cantidad_dispositivos_hogar <- function(.data, group_var_1, group_var_2, filter_var = group_var_2) {
+
+      legend_title <- dplyr::case_when(
+         group_var_1 == "localidad" ~ "Localidad",
+         group_var_1 == "ingresos_total" ~ "Nivel de ingresos"
+      )
+
+      xaxis_title <- dplyr::case_when(
+         group_var_2 == "tiene_desktop" ~ "Cantidad de desktops en el hogar<br>(para hogares que tienen)",
+         group_var_2 == "tiene_laptop" ~ "Cantidad de laptops en el hogar<br>(para hogares que tienen)",
+         group_var_2 == "tiene_tablet" ~ "Cantidad de tablets en el hogar<br>(para hogares que tienen)"
+      )
+
+      .data %>%
+         dplyr::mutate(
+            group_var_1 = !!rlang::sym(group_var_1),
+            group_var_2 = !!rlang::sym(
+               stringr::str_replace(
+                  string = group_var_2,
+                  pattern = "tiene",
+                  replacement = "cantidad"
+               )
+            ),
+            filter_var = !!rlang::sym(filter_var)
+         ) %>%
+         dplyr::filter(
+            filter_var == "Sí"
+         ) %>%
+         dplyr::group_by(
+            group_var_1,
+            group_var_2
+         ) %>%
+         dplyr::summarise(
+            n = base::sum(peso_hogar, na.rm = TRUE)
+         ) %>%
+         dplyr::mutate(
+            prop = n / base::sum(n, na.rm = TRUE)
+         ) %>%
+         plotly::plot_ly() %>%
+         plotly::add_trace(
+            x = ~group_var_2,
+            y = ~prop,
+            color = ~group_var_1,
+            colors = "Accent",
+            type = "bar",
+            hovertemplate = ~base::paste0(
+               "%{y:0.2%}"
+            )
+         ) %>%
+         plotly::layout(
+            xaxis = base::list(
+               title = base::paste("<b>", xaxis_title, "</b>")
+            ),
+            yaxis = base::list(
+               title = "<b>Porcentaje de los hogares</b>",
+               tickformat = "%"
+            ),
+            legend = base::list(
+               title = base::list(
+                  text = base::paste("<b>", legend_title, "</b>")
+               ),
+               bgcolor = "#E2E2E2",
+               orientation = "h",
+               yanchor = "bottom",
+               xanchor = "left",
+               y = -.45
+            ),
+            hovermode = "x"
+         ) %>%
+         plotly::config(
+            locale = "es",
+            displayModeBar = TRUE
+         )
+
+   }
+
    # Tab: Hogares - Dispositivos ---------------------------------------------
 
    output$plotly_hogares_dispositivos <- plotly::renderPlotly({
@@ -228,6 +315,20 @@ server <- function(input, output) {
             ingresos_total %in% input$ingresos
          ) %>%
          plotly_hogares_tienen(
+            group_var_1 = input$resultados_por,
+            group_var_2 = input$hogares_que_tienen_dispositivo
+         )
+
+   })
+
+   output$plotly_cantidad_dispositivos_hogar <- plotly::renderPlotly({
+
+      eutic %>%
+         dplyr::filter(
+            localidad %in% input$localidad,
+            ingresos_total %in% input$ingresos
+         ) %>%
+         plotly_cantidad_dispositivos_hogar(
             group_var_1 = input$resultados_por,
             group_var_2 = input$hogares_que_tienen_dispositivo
          )
