@@ -47,7 +47,7 @@ ui <- shiny::tagList(
             ),
 
             shiny::radioButtons(
-               inputId = "resultados_por",
+               inputId = "resultados_por_hogares_dispositivos",
                label = "Graficar según:",
                choiceNames = base::list(
                   shiny::icon("map-marked-alt"),
@@ -105,35 +105,49 @@ ui <- shiny::tagList(
 
             shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
 
-            # shiny::selectInput(
-            #    inputId = "hogares_que_tienen_internet",
-            #    label = "Hogares que tengan:",
-            #    choices = base::c("Internet"),
-            #    selected = "Internet"
-            # ),
-            #
-            # shiny::selectInput(
-            #    inputId = "resultados_por",
-            #    label = "Graficar según:",
-            #    choices = base::c("Nivel de ingresos", "Localidad"),
-            #    selected = "Localidad"
-            # ),
-            #
-            # shiny::selectInput(
-            #    inputId = "localidad",
-            #    label = "Localidad:",
-            #    choices = base::levels(eutic$localidad),
-            #    selected = base::levels(eutic$localidad),
-            #    multiple = TRUE
-            # ),
-            #
-            # shiny::selectInput(
-            #    inputId = "ingresos",
-            #    label = "Nivel de ingresos del hogar:",
-            #    choices = base::levels(eutic$ingresos_total),
-            #    selected = base::levels(eutic$ingresos_total),
-            #    multiple = TRUE
-            # ),
+            shiny::radioButtons(
+               inputId = "hogares_que_tienen_internet",
+               label = "Hogares que tengan:",
+               choiceNames = base::list(
+                  "Internet"
+               ),
+               choiceValues = base::list(
+                  "tiene_internet"
+               ),
+               selected = "tiene_internet",
+               inline = TRUE
+            ),
+
+            shiny::radioButtons(
+               inputId = "resultados_por",
+               label = "Graficar según:",
+               choiceNames = base::list(
+                  shiny::icon("map-marked-alt"),
+                  shiny::icon("dollar-sign")
+               ),
+               choiceValues = base::list(
+                  "localidad",
+                  "ingresos_total"
+               ),
+               selected = "localidad",
+               inline = TRUE
+            ),
+
+            shiny::selectInput(
+               inputId = "localidad",
+               label = "Localidad:",
+               choices = base::levels(eutic$localidad),
+               selected = base::levels(eutic$localidad),
+               multiple = TRUE
+            ),
+
+            shiny::selectInput(
+               inputId = "ingresos",
+               label = "Nivel de ingresos del hogar:",
+               choices = base::levels(eutic$ingresos_total),
+               selected = base::levels(eutic$ingresos_total),
+               multiple = TRUE
+            ),
 
             shiny::p("Fuente: Instituto Nacional de Estadística"),
 
@@ -146,7 +160,7 @@ ui <- shiny::tagList(
 
          shiny::mainPanel(
 
-            # plotly::plotlyOutput(outputId = "hogares_internet")
+            plotly::plotlyOutput(outputId = "hogares_internet")
 
          )
 
@@ -171,7 +185,8 @@ server <- function(input, output) {
       legend_title <- dplyr::case_when(
          group_var_2 == "tiene_desktop" ~ "¿Tiene desktop en el hogar?",
          group_var_2 == "tiene_laptop" ~ "¿Tiene laptop en el hogar?",
-         group_var_2 == "tiene_tablet" ~ "¿Tiene tablet en el hogar?"
+         group_var_2 == "tiene_tablet" ~ "¿Tiene tablet en el hogar?",
+         group_var_2 == "tiene_internet" ~ "¿Tiene internet en el hogar?"
       )
 
       .data %>%
@@ -315,7 +330,7 @@ server <- function(input, output) {
             ingresos_total %in% input$ingresos
          ) %>%
          plotly_hogares_tienen(
-            group_var_1 = input$resultados_por,
+            group_var_1 = input$resultados_por_hogares_dispositivos,
             group_var_2 = input$hogares_que_tienen_dispositivo
          )
 
@@ -329,8 +344,25 @@ server <- function(input, output) {
             ingresos_total %in% input$ingresos
          ) %>%
          plotly_cantidad_dispositivos_hogar(
-            group_var_1 = input$resultados_por,
+            group_var_1 = input$resultados_por_hogares_dispositivos,
             group_var_2 = input$hogares_que_tienen_dispositivo
+         )
+
+   })
+
+
+   # Tab: Hogares - Conexión -------------------------------------------------
+
+   output$hogares_internet <- plotly::renderPlotly({
+
+      eutic %>%
+         dplyr::filter(
+            localidad %in% input$localidad,
+            ingresos_total %in% input$ingresos
+         ) %>%
+         plotly_hogares_tienen(
+            group_var_1 = input$resultados_por,
+            group_var_2 = input$hogares_que_tienen_internet
          )
 
    })
