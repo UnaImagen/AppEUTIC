@@ -6,7 +6,6 @@ library(shiny, quietly = TRUE)
 library(magrittr, quietly = TRUE)
 
 eutic <- readr::read_rds(path = "eutic.rds")
-tipo_internet <- readr::read_rds(path = "tipo_internet.rds")
 
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
@@ -323,25 +322,16 @@ server <- function(input, output) {
 
    }
 
-   plotly_tipo_conexion <- function(.data, group_var_1) {
+   genera_data_tipo_conexion <- function(.data, group_by_var) {
 
-      xaxis_title <- dplyr::case_when(
-         group_var_1 == "localidad" ~ "Localidad",
-         group_var_1 == "ingresos_total" ~ "Nivel de ingresos"
-      )
-
-      .data %>%
-         dplyr::mutate(
-            group_var_1 = !!rlang::sym(group_var_1),
-            group_var_2 = tipo_internet,
-            filter_var = tiene_internet
-         ) %>%
+      ## Hogares con Banda Ancha Fija
+      aux_data <- .data %>%
          dplyr::filter(
-            filter_var == "Sí",
+            tiene_internet == "Sí"
          ) %>%
          dplyr::group_by(
-            group_var_1,
-            group_var_2
+            group_by_var = !!rlang::sym(group_by_var),
+            banda_ancha_fija
          ) %>%
          dplyr::summarise(
             n = base::sum(peso_hogar, na.rm = TRUE)
@@ -350,11 +340,93 @@ server <- function(input, output) {
             prop = n / base::sum(n, na.rm = TRUE)
          ) %>%
          dplyr::ungroup() %>%
+         dplyr::filter(
+            banda_ancha_fija == "Sí"
+         ) %>%
+         dplyr::transmute(
+            group_by_var,
+            tipo_conexion = "banda_ancha_fija",
+            prop = prop
+         )
+
+      aux_data %<>%
+
+         ## Hogares con Banda Ancha Móvil
+         dplyr::bind_rows(
+            .data %>%
+               dplyr::filter(
+                  tiene_internet == "Sí"
+               ) %>%
+               dplyr::group_by(
+                  group_by_var = !!rlang::sym(group_by_var),
+                  banda_ancha_movil
+               ) %>%
+               dplyr::summarise(
+                  n = base::sum(peso_hogar, na.rm = TRUE)
+               ) %>%
+               dplyr::mutate(
+                  prop = n / base::sum(n, na.rm = TRUE)
+               ) %>%
+               dplyr::ungroup() %>%
+               dplyr::filter(
+                  banda_ancha_movil == "Sí"
+               ) %>%
+               dplyr::transmute(
+                  group_by_var,
+                  tipo_conexion = "banda_ancha_movil",
+                  prop = prop
+               ),
+
+            ## Hogares con otros tipos de conexión
+            .data %>%
+               dplyr::filter(
+                  tiene_internet == "Sí"
+               ) %>%
+               dplyr::group_by(
+                  group_by_var = !!rlang::sym(group_by_var),
+                  otra_conexion
+               ) %>%
+               dplyr::summarise(
+                  n = base::sum(peso_hogar, na.rm = TRUE)
+               ) %>%
+               dplyr::mutate(
+                  prop = n / base::sum(n, na.rm = TRUE)
+               ) %>%
+               dplyr::ungroup() %>%
+               dplyr::filter(
+                  otra_conexion == "Sí"
+               ) %>%
+               dplyr::transmute(
+                  group_by_var,
+                  tipo_conexion = "otra_conexion",
+                  prop = prop
+               )
+
+         ) %>%
+         dplyr::mutate(
+            tipo_conexion = dplyr::case_when(
+               tipo_conexion == "banda_ancha_fija" ~ "Banda ancha fija",
+               tipo_conexion == "banda_ancha_movil" ~ "Banda ancha móvil",
+               tipo_conexion == "otra_conexion" ~ "Otra conexión"
+            ),
+            tipo_conexion = forcats::as_factor(tipo_conexion)
+         )
+
+   }
+
+   plotly_tipo_conexion <- function(.data, group_by_var) {
+
+      xaxis_title <- dplyr::case_when(
+         group_by_var == "localidad" ~ "Localidad",
+         group_by_var == "ingresos_total" ~ "Nivel de ingresos"
+      )
+
+      .data %>%
          plotly::plot_ly() %>%
          plotly::add_trace(
-            x = ~group_var_2,
+            x = ~group_by_var,
             y = ~prop,
-            color = ~group_var_1,
+            color = ~tipo_conexion,
             colors = "Accent",
             type = "bar",
             hovertemplate = ~base::paste0(
@@ -363,7 +435,7 @@ server <- function(input, output) {
          ) %>%
          plotly::layout(
             xaxis = base::list(
-               title = base::paste("<b>", "Tipo de conexión", "</b>")
+               title = base::paste("<b>", xaxis_title, "</b>")
             ),
             yaxis = base::list(
                title = "<b>Porcentaje de los hogares</b>",
@@ -371,7 +443,7 @@ server <- function(input, output) {
             ),
             legend = base::list(
                title = base::list(
-                  text = base::paste("<b>", xaxis_title, "</b>")
+                  text = base::paste("<b>", "Tipo de conexión", "</b>")
                ),
                bgcolor = "#E2E2E2",
                orientation = "h",
@@ -436,17 +508,16 @@ server <- function(input, output) {
 
    output$hogares_tipo_conexion <- plotly::renderPlotly({
 
-      tipo_internet %>%
-         dplyr::filter(
-            tiene_internet == "Sí"
-         ) %>%
-         base::droplevels() %>%
+      eutic %>%
          dplyr::filter(
             localidad %in% input$localidad_conexion,
             ingresos_total %in% input$ingresos_conexion
          ) %>%
+         genera_data_tipo_conexion(
+            group_by_var = input$resultados_por_hogares_conexion
+         ) %>%
          plotly_tipo_conexion(
-            group_var_1 = input$resultados_por_hogares_conexion
+            group_by_var = input$resultados_por_hogares_conexion
          )
 
    })
