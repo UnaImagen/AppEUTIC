@@ -12,71 +12,6 @@ eutic <- haven::read_sav(
       .funs = tolower
    )
 
-
-# Tipos de conexión -------------------------------------------------------
-tipo_internet <- eutic %>%
-   dplyr::transmute(
-      nper = dplyr::row_number(),
-      peso_hogar = base::as.integer(peso.hog),
-      localidad = forcats::as_factor(dpto),
-      localidad = forcats::fct_collapse(
-         .f = localidad,
-         Montevideo = "Montevideo",
-         other_level = "Interior"
-      ),
-      ingresos_total = forcats::as_factor(quintil_total),
-      ingresos_total = forcats::fct_relabel(
-         .f = ingresos_total,
-         .fun = ~stringr::str_c("Q", .)
-      ),
-      h9,
-      h10_1_1,
-      h10_1_2,
-      h10_1_3,
-      h10_1_4,
-      h10_1_5,
-      h10_1_6
-   ) %>%
-   dplyr::mutate_at(
-      .vars = dplyr::vars(tidyselect::starts_with("h")),
-      .funs = ~forcats::as_factor(.)
-   ) %>%
-   dplyr::mutate_at(
-      .vars = dplyr::vars(tidyselect::starts_with("h10_")),
-      .funs = ~forcats::fct_recode(
-         .f = .,
-         "No tiene internet" = "0"
-      )
-   ) %>%
-   tidyr::pivot_longer(
-      cols = tidyselect::starts_with("h10_1_"),
-      names_to = "tipo_internet",
-      values_to = "value"
-   ) %>%
-   dplyr::filter(
-      (h9 == "Sí" & value != "No") | (h9 == "No" & tipo_internet == "h10_1_1")
-   ) %>%
-   dplyr::transmute(
-      localidad,
-      ingresos_total,
-      tiene_internet = h9,
-      tipo_internet = dplyr::if_else(h9 == "No", NA_character_, tipo_internet),
-      tipo_internet = dplyr::case_when(
-         tipo_internet == "h10_1_1" ~ "Línea discada",
-         tipo_internet == "h10_1_2" ~ "Banda ancha fija",
-         tipo_internet == "h10_1_3" ~ "Plan Ceibal",
-         tipo_internet == "h10_1_4" ~ "Banda ancha móvil",
-         tipo_internet == "h10_1_5" ~ "Se cuelga",
-         tipo_internet == "h10_1_6" ~ "Otro",
-         TRUE ~ "No tiene internet"
-      ),
-      tipo_internet = forcats::as_factor(tipo_internet),
-      peso_hogar
-   )
-
-readr::write_rds(x = tipo_internet, path = "tipo_internet.rds")
-
-
 # EUTIC -------------------------------------------------------------------
 eutic %<>%
    dplyr::transmute(
@@ -157,6 +92,21 @@ eutic %<>%
 
       ## Conexión a internet
       tiene_internet = forcats::as_factor(h9),
+      banda_ancha_fija = dplyr::if_else(h10_1_2 == 1, "Sí", "No"),
+      banda_ancha_fija = forcats::as_factor(banda_ancha_fija),
+      banda_ancha_movil = dplyr::if_else(h10_1_4 == 1, "Sí", "No"),
+      banda_ancha_movil = forcats::as_factor(banda_ancha_movil),
+      otra_conexion = dplyr::if_else(h10_1_1 == 1 | h10_1_3 == 1 | h10_1_5 == 1 | h10_1_6 == 1, "Sí", "No"),
+      otra_conexion = forcats::as_factor(otra_conexion),
+
+      # plan_ceibal = dplyr::if_else(h10_1_3 == 1, "Sí", "No"),
+      # plan_ceibal = forcats::as_factor(plan_ceibal),
+      # linea_discada = dplyr::if_else(h10_1_1 == 1, "Sí", "No"),
+      # linea_discada = forcats::as_factor(linea_discada),
+      # se_cuelga = dplyr::if_else(h10_1_5 == 1, "Sí", "No"),
+      # se_cuelga = forcats::as_factor(se_cuelga),
+      # otra_conexion = dplyr::if_else(h10_1_6 == 1, "Sí", "No"),
+      # otra_conexion = forcats::as_factor(otra_conexion),
 
       ## Uso de celular
       uso_celular_comun = forcats::as_factor(p23),
