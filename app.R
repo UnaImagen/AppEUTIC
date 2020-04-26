@@ -119,7 +119,7 @@ ui <- shiny::tagList(
             ),
 
             shiny::radioButtons(
-               inputId = "resultados_por",
+               inputId = "resultados_por_hogares_conexion",
                label = "Graficar según:",
                choiceNames = base::list(
                   shiny::icon("map-marked-alt"),
@@ -160,7 +160,9 @@ ui <- shiny::tagList(
 
          shiny::mainPanel(
 
-            plotly::plotlyOutput(outputId = "hogares_internet")
+            plotly::plotlyOutput(outputId = "hogares_internet"),
+
+            plotly::plotlyOutput(outputId = "hogares_tipo_conexion")
 
          )
 
@@ -244,7 +246,7 @@ server <- function(input, output) {
 
    }
 
-   plotly_cantidad_dispositivos_hogar <- function(.data, group_var_1, group_var_2, filter_var = group_var_2) {
+   plotly_hogares_cantidad <- function(.data, group_var_1, group_var_2, filter_var = group_var_2) {
 
       legend_title <- dplyr::case_when(
          group_var_1 == "localidad" ~ "Localidad",
@@ -282,6 +284,7 @@ server <- function(input, output) {
          dplyr::mutate(
             prop = n / base::sum(n, na.rm = TRUE)
          ) %>%
+         dplyr::ungroup() %>%
          plotly::plot_ly() %>%
          plotly::add_trace(
             x = ~group_var_2,
@@ -320,6 +323,71 @@ server <- function(input, output) {
 
    }
 
+   plotly_tipo_conexion <- function(.data, group_var_1) {
+
+      xaxis_title <- dplyr::case_when(
+         group_var_1 == "localidad" ~ "Localidad",
+         group_var_1 == "ingresos_total" ~ "Nivel de ingresos"
+      )
+
+      .data %>%
+         dplyr::mutate(
+            group_var_1 = !!rlang::sym(group_var_1),
+            group_var_2 = tipo_internet,
+            filter_var = tiene_internet
+         ) %>%
+         dplyr::filter(
+            filter_var == "Sí",
+         ) %>%
+         dplyr::group_by(
+            group_var_1,
+            group_var_2
+         ) %>%
+         dplyr::summarise(
+            n = base::sum(peso_hogar, na.rm = TRUE)
+         ) %>%
+         dplyr::mutate(
+            prop = n / base::sum(n, na.rm = TRUE)
+         ) %>%
+         dplyr::ungroup() %>%
+         plotly::plot_ly() %>%
+         plotly::add_trace(
+            x = ~group_var_2,
+            y = ~prop,
+            color = ~group_var_1,
+            colors = "Accent",
+            type = "bar",
+            hovertemplate = ~base::paste0(
+               "%{y:0.2%}"
+            )
+         ) %>%
+         plotly::layout(
+            xaxis = base::list(
+               title = base::paste("<b>", "Tipo de conexión", "</b>")
+            ),
+            yaxis = base::list(
+               title = "<b>Porcentaje de los hogares</b>",
+               tickformat = "%"
+            ),
+            legend = base::list(
+               title = base::list(
+                  text = base::paste("<b>", xaxis_title, "</b>")
+               ),
+               bgcolor = "#E2E2E2",
+               orientation = "h",
+               yanchor = "bottom",
+               xanchor = "left",
+               y = -.35
+            ),
+            hovermode = "x"
+         ) %>%
+         plotly::config(
+            locale = "es",
+            displayModeBar = TRUE
+         )
+
+   }
+
    # Tab: Hogares - Dispositivos ---------------------------------------------
 
    output$plotly_hogares_dispositivos <- plotly::renderPlotly({
@@ -343,13 +411,12 @@ server <- function(input, output) {
             localidad %in% input$localidad_dispositivos,
             ingresos_total %in% input$ingresos_dispositivos
          ) %>%
-         plotly_cantidad_dispositivos_hogar(
+         plotly_hogares_cantidad(
             group_var_1 = input$resultados_por_hogares_dispositivos,
             group_var_2 = input$hogares_que_tienen_dispositivo
          )
 
    })
-
 
    # Tab: Hogares - Conexión -------------------------------------------------
 
@@ -361,8 +428,25 @@ server <- function(input, output) {
             ingresos_total %in% input$ingresos_conexion
          ) %>%
          plotly_hogares_tienen(
-            group_var_1 = input$resultados_por,
+            group_var_1 = input$resultados_por_hogares_conexion,
             group_var_2 = input$hogares_que_tienen_internet
+         )
+
+   })
+
+   output$hogares_tipo_conexion <- plotly::renderPlotly({
+
+      tipo_internet %>%
+         dplyr::filter(
+            tiene_internet == "Sí"
+         ) %>%
+         base::droplevels() %>%
+         dplyr::filter(
+            localidad %in% input$localidad_conexion,
+            ingresos_total %in% input$ingresos_conexion
+         ) %>%
+         plotly_tipo_conexion(
+            group_var_1 = input$resultados_por_hogares_conexion
          )
 
    })
