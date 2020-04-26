@@ -1,5 +1,5 @@
 #=================#
-#### APP ENCOR ####
+#### APP EUTIC ####
 #=================#
 
 library(shiny, quietly = TRUE)
