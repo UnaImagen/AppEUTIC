@@ -99,25 +99,46 @@ eutic %<>%
       ),
 
       ## Tenencia en el hogar: desktop
-      tiene_desktop = forcats::as_factor(h6_1),
-      tiene_desktop = forcats::fct_collapse(
-         .f = tiene_desktop,
-         No = base::c("No", "0")
+      tiene_desktop = base::as.integer(h6_1),
+      tiene_desktop = dplyr::if_else(tiene_desktop == 1L, "Sí", "No"),
+      cantidad_desktop = dplyr::if_else(tiene_desktop == "No", 0L, base::as.integer(h6_1_1)),
+      tiene_desktop = dplyr::if_else(cantidad_desktop == 0L, "No", tiene_desktop),
+      tiene_desktop = forcats::as_factor(tiene_desktop),
+      cantidad_desktop = forcats::as_factor(cantidad_desktop),
+      cantidad_desktop = forcats::fct_lump_n(
+         f = cantidad_desktop,
+         n = 3,
+         w = peso_hogar,
+         other_level = "3 o más"
       ),
-      cantidad_desktop = base::as.integer(h6_1_1),
 
       ## Tenencia en el hogar: laptop
-      tiene_laptop = forcats::as_factor(h6_2),
-      tiene_laptop = forcats::fct_collapse(
-         .f = tiene_laptop,
-         No = base::c("No", "0")
+      tiene_laptop = base::as.integer(h6_2),
+      tiene_laptop = dplyr::if_else(tiene_laptop == 1L, "Sí", "No"),
+      cantidad_laptop = dplyr::if_else(tiene_laptop == "No", 0L, base::as.integer(h6_2_1)),
+      tiene_laptop = dplyr::if_else(cantidad_laptop == 0L, "No", tiene_laptop),
+      tiene_laptop = forcats::as_factor(tiene_laptop),
+      cantidad_laptop = forcats::as_factor(cantidad_laptop),
+      cantidad_laptop = forcats::fct_lump_n(
+         f = cantidad_laptop,
+         n = 3,
+         w = peso_hogar,
+         other_level = "3 o más"
       ),
-      cantidad_laptop = base::as.integer(h6_2_1),
 
       ## Tenencia en el hogar: tablet
-      tiene_tablet = dplyr::if_else(h6_3 == 1, "Sí", "No"),
+      tiene_tablet = base::as.integer(h6_3),
+      tiene_tablet = dplyr::if_else(tiene_tablet == 1L, "Sí", "No"),
+      cantidad_tablet = dplyr::if_else(tiene_tablet == "No", 0L, base::as.integer(h6_3_1)),
+      tiene_tablet = dplyr::if_else(cantidad_tablet == 0L, "No", tiene_tablet),
       tiene_tablet = forcats::as_factor(tiene_tablet),
-      cantidad_tablet = base::as.integer(h6_3_1),
+      cantidad_tablet = forcats::as_factor(cantidad_tablet),
+      cantidad_tablet = forcats::fct_lump_n(
+         f = cantidad_tablet,
+         n = 3,
+         w = peso_hogar,
+         other_level = "3 o más"
+      ),
 
       ## Conexión a internet
       tiene_internet = forcats::as_factor(h9),
