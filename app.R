@@ -62,7 +62,7 @@ ui <- shiny::tagList(
             ),
 
             shiny::selectInput(
-               inputId = "localidad",
+               inputId = "localidad_dispositivos",
                label = "Localidad:",
                choices = base::levels(eutic$localidad),
                selected = base::levels(eutic$localidad),
@@ -70,7 +70,7 @@ ui <- shiny::tagList(
             ),
 
             shiny::selectInput(
-               inputId = "ingresos",
+               inputId = "ingresos_dispositivos",
                label = "Nivel de ingresos del hogar:",
                choices = base::levels(eutic$ingresos_total),
                selected = base::levels(eutic$ingresos_total),
@@ -134,7 +134,7 @@ ui <- shiny::tagList(
             ),
 
             shiny::selectInput(
-               inputId = "localidad",
+               inputId = "localidad_conexion",
                label = "Localidad:",
                choices = base::levels(eutic$localidad),
                selected = base::levels(eutic$localidad),
@@ -142,7 +142,7 @@ ui <- shiny::tagList(
             ),
 
             shiny::selectInput(
-               inputId = "ingresos",
+               inputId = "ingresos_conexion",
                label = "Nivel de ingresos del hogar:",
                choices = base::levels(eutic$ingresos_total),
                selected = base::levels(eutic$ingresos_total),
@@ -326,8 +326,8 @@ server <- function(input, output) {
 
       eutic %>%
          dplyr::filter(
-            localidad %in% input$localidad,
-            ingresos_total %in% input$ingresos
+            localidad %in% input$localidad_dispositivos,
+            ingresos_total %in% input$ingresos_dispositivos
          ) %>%
          plotly_hogares_tienen(
             group_var_1 = input$resultados_por_hogares_dispositivos,
@@ -340,8 +340,8 @@ server <- function(input, output) {
 
       eutic %>%
          dplyr::filter(
-            localidad %in% input$localidad,
-            ingresos_total %in% input$ingresos
+            localidad %in% input$localidad_dispositivos,
+            ingresos_total %in% input$ingresos_dispositivos
          ) %>%
          plotly_cantidad_dispositivos_hogar(
             group_var_1 = input$resultados_por_hogares_dispositivos,
@@ -357,8 +357,8 @@ server <- function(input, output) {
 
       eutic %>%
          dplyr::filter(
-            localidad %in% input$localidad,
-            ingresos_total %in% input$ingresos
+            localidad %in% input$localidad_conexion,
+            ingresos_total %in% input$ingresos_conexion
          ) %>%
          plotly_hogares_tienen(
             group_var_1 = input$resultados_por,
