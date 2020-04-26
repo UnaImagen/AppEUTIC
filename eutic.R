@@ -70,6 +70,7 @@ tipo_internet <- eutic %>%
          tipo_internet == "h10_1_6" ~ "Otro",
          TRUE ~ "No tiene internet"
       ),
+      tipo_internet = forcats::as_factor(tipo_internet),
       peso_hogar
    )
 
@@ -199,9 +200,6 @@ eutic %<>%
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
-
-
-tipo_internet
 
 #===============#
 #### THE END ####
