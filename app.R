@@ -168,7 +168,6 @@ ui <- shiny::tagList(
       ),
 
       # Tab: Personas - Uso TICs ------------------------------------------------
-
       shiny::tabPanel(
 
          title = "Personas - Uso de TICs",
@@ -181,9 +180,9 @@ ui <- shiny::tagList(
                inputId = "personas_que_usan",
                label = "TIC:",
                choiceNames = base::list(
-                  "Celular",
-                  "PC",
-                  "Tablet"
+                  shiny::icon("mobile-alt"),
+                  shiny::icon("laptop"),
+                  shiny::icon("tablet")
                ),
                choiceValues = base::list(
                   "uso_celular",
@@ -272,11 +271,125 @@ ui <- shiny::tagList(
 
             plotly::plotlyOutput(outputId = "personas_uso_tics"),
 
-            plotly::plotlyOutput(outputId = "personas_usos_tics"),
+            plotly::plotlyOutput(outputId = "personas_usos_tics")
+
+         )
+
+      ),
+
+      # Tab: Personas - Internet ------------------------------------------------
+      shiny::tabPanel(
+
+         title = "Personas - Uso de Internet",
+
+         shiny::sidebarPanel(
+
+            shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
+
+            shiny::radioButtons(
+               inputId = "personas_que_usan_internet",
+               label = "TIC:",
+               choiceNames = base::list(
+                  "Internet"
+                  # "PC",
+                  # "Tablet"
+               ),
+               choiceValues = base::list(
+                  "uso_internet"
+                  # "uso_pc",
+                  # "uso_tablet"
+               ),
+               selected = "uso_internet",
+               inline = TRUE
+            ),
+
+            shiny::radioButtons(
+               inputId = "resultados_por_personas_uso_internet",
+               label = "Graficar según:",
+               choiceNames = base::list(
+                  shiny::icon("map-marked-alt"),
+                  shiny::icon("dollar-sign"),
+                  shiny::icon("venus-mars"),
+                  shiny::icon("graduation-cap")
+
+               ),
+               choiceValues = base::list(
+                  "localidad",
+                  "ingresos_total",
+                  "sexo",
+                  "nivel_educ"
+               ),
+               selected = "localidad",
+               inline = TRUE
+            ),
+
+            shiny::selectInput(
+               inputId = "localidad_personas_uso_internet",
+               label = "Localidad:",
+               choices = base::levels(eutic$localidad),
+               selected = base::levels(eutic$localidad),
+               multiple = TRUE
+            ),
+
+            shiny::selectInput(
+               inputId = "ingresos_personas_uso_internet",
+               label = "Nivel de ingresos del hogar:",
+               choices = base::levels(eutic$ingresos_total),
+               selected = base::levels(eutic$ingresos_total),
+               multiple = TRUE
+            ),
+
+            shiny::sliderInput(
+               inputId = "edad_personas_uso_internet",
+               label = "Edad:",
+               min = base::min(eutic$edad, na.rm = TRUE),
+               max = base::max(eutic$edad, na.rm = TRUE),
+               value = base::c(
+                  base::min(eutic$edad, na.rm = TRUE),
+                  base::max(eutic$edad, na.rm = TRUE)
+               ),
+               step = 1,
+               animate = TRUE
+            ),
+
+            shiny::selectInput(
+               inputId = "sexo_personas_uso_internet",
+               label = "Sexo:",
+               choices = base::levels(eutic$sexo),
+               selected = base::levels(eutic$sexo),
+               multiple = TRUE
+            ),
+
+            shiny::selectInput(
+               inputId = "nivel_educ_personas_uso_internet",
+               label = "Nivel educativo:",
+               choices = base::levels(eutic$nivel_educ),
+               selected = base::levels(eutic$nivel_educ),
+               multiple = TRUE
+            ),
+
+            shiny::p("Fuente: Instituto Nacional de Estadística"),
+
+            shiny::p(
+               "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
+               los hogares de menores ingresos del país."
+            )
+
+         ),
+
+         shiny::mainPanel(
+
+            plotly::plotlyOutput(outputId = "personas_uso_internet"),
+
+            plotly::plotlyOutput(outputId = "personas_uso_internet_frecuencia")
 
          )
 
       )
+
+      # Tab: Personas - Redes Sociales ------------------------------------------
+
+
 
    )
 
@@ -581,9 +694,11 @@ server <- function(input, output) {
       )
 
       legend_title <- dplyr::case_when(
-         group_var_2 == "uso_celular" ~ "Utilizó un celular en los<br> últimos 3 meses",
-         group_var_2 == "uso_tablet" ~ "Utilizó una tablet en los<br> últimos 3 meses",
-         group_var_2 == "uso_pc" ~ "Utilizó una PC en los<br> últimos 3 meses"
+         group_var_2 == "uso_celular" ~ "¿Utilizó un celular en los<br> últimos 3 meses?",
+         group_var_2 == "uso_tablet" ~ "¿Utilizó una tablet en los<br> últimos 3 meses?",
+         group_var_2 == "uso_pc" ~ "¿Utilizó una PC en los<br> últimos 3 meses?",
+         group_var_2 == "uso_internet" ~ "¿Utilizó alguna vez Internet?",
+         group_var_2 == "frecuencia_uso_internet" ~ "¿Con qué frecuencia utilizó<br> Internet en los últimos<br> 3 meses? (para quienes lo<br> utilizaron)"
       )
 
       .data %>%
@@ -629,7 +744,7 @@ server <- function(input, output) {
                orientation = "h",
                yanchor = "bottom",
                xanchor = "left",
-               y = -.40
+               y = -.60
             ),
             hovermode = "x"
          ) %>%
@@ -820,7 +935,7 @@ server <- function(input, output) {
                orientation = "h",
                yanchor = "bottom",
                xanchor = "left",
-               y = -.40
+               y = -.60
             ),
             hovermode = "x"
          ) %>%
@@ -893,7 +1008,6 @@ server <- function(input, output) {
 
    })
 
-
    # Tab: Personas - Uso TICs ------------------------------------------------
 
    output$personas_uso_tics <- plotly::renderPlotly({
@@ -912,7 +1026,6 @@ server <- function(input, output) {
          )
 
    })
-
 
    output$personas_usos_tics <- plotly::renderPlotly({
 
@@ -934,6 +1047,46 @@ server <- function(input, output) {
             )
 
       }
+
+   })
+
+   # Tab: Personas - Internet ------------------------------------------------
+
+   output$personas_uso_internet <- plotly::renderPlotly({
+
+      eutic %>%
+         dplyr::filter(
+            localidad %in% input$localidad_personas_uso_internet,
+            ingresos_total %in% input$ingresos_personas_uso_internet,
+            dplyr::between(edad, input$edad_personas_uso_internet[1], input$edad_personas_uso_internet[2]),
+            sexo %in% input$sexo_personas_uso_internet,
+            nivel_educ %in% input$nivel_educ_personas_uso_internet
+         ) %>%
+         plotly_personas_uso_tic(
+            group_var_1 = input$resultados_por_personas_uso_internet,
+            group_var_2 = input$personas_que_usan_internet
+         )
+
+   })
+
+   output$personas_uso_internet_frecuencia <- plotly::renderPlotly({
+
+      eutic %>%
+         dplyr::filter(
+            uso_internet == "Sí"
+         ) %>%
+         base::droplevels() %>%
+         dplyr::filter(
+            localidad %in% input$localidad_personas_uso_internet,
+            ingresos_total %in% input$ingresos_personas_uso_internet,
+            dplyr::between(edad, input$edad_personas_uso_internet[1], input$edad_personas_uso_internet[2]),
+            sexo %in% input$sexo_personas_uso_internet,
+            nivel_educ %in% input$nivel_educ_personas_uso_internet
+         ) %>%
+         plotly_personas_uso_tic(
+            group_var_1 = input$resultados_por_personas_uso_internet,
+            group_var_2 = "frecuencia_uso_internet"
+         )
 
    })
 
