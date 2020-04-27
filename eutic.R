@@ -99,15 +99,6 @@ eutic %<>%
       otra_conexion = dplyr::if_else(h10_1_1 == 1 | h10_1_3 == 1 | h10_1_5 == 1 | h10_1_6 == 1, "Sí", "No"),
       otra_conexion = forcats::as_factor(otra_conexion),
 
-      # plan_ceibal = dplyr::if_else(h10_1_3 == 1, "Sí", "No"),
-      # plan_ceibal = forcats::as_factor(plan_ceibal),
-      # linea_discada = dplyr::if_else(h10_1_1 == 1, "Sí", "No"),
-      # linea_discada = forcats::as_factor(linea_discada),
-      # se_cuelga = dplyr::if_else(h10_1_5 == 1, "Sí", "No"),
-      # se_cuelga = forcats::as_factor(se_cuelga),
-      # otra_conexion = dplyr::if_else(h10_1_6 == 1, "Sí", "No"),
-      # otra_conexion = forcats::as_factor(otra_conexion),
-
       ## Uso de celular
       uso_celular_comun = forcats::as_factor(p23),
       uso_smart_phone = forcats::as_factor(p23_1),
@@ -117,6 +108,16 @@ eutic %<>%
          uso_celular_comun == "Sí" & uso_smart_phone == "Sí" ~ "Utiliza Smart Phone",
          TRUE ~ NA_character_
       ),
+      uso_celular_llamadas = dplyr::if_else(p25_1_1 == 1 | p25_1_2 == 1, "Sí", "No"),
+      uso_celular_llamadas = forcats::as_factor(uso_celular_llamadas),
+      uso_celular_mensajes = dplyr::if_else(p25_1_3 == 1 | p25_1_15 == 1 | p25_1_16 == 1, "Sí", "No"),
+      uso_celular_mensajes = forcats::as_factor(uso_celular_mensajes),
+      uso_celular_multimedia_y_redes = dplyr::if_else(p25_1_5 == 1 | p25_1_6 == 1 | p25_1_8 == 1 | p25_1_9 == 1 | p25_1_10 == 1, "Sí", "No"),
+      uso_celular_multimedia_y_redes = forcats::as_factor(uso_celular_multimedia_y_redes),
+      uso_celular_informacion = dplyr::if_else(p25_1_7 == 1 | p25_1_12 == 1, "Sí", "No"),
+      uso_celular_informacion = forcats::as_factor(uso_celular_informacion),
+      uso_celular_compras = dplyr::if_else(p25_1_11 == 1 | p25_1_13 == 1 | p25_1_14 == 1, "Sí", "No"),
+      uso_celular_compras = forcats::as_factor(uso_celular_compras),
 
       ## Uso de tablet
       uso_tablet = forcats::as_factor(p26),
@@ -150,6 +151,7 @@ eutic %<>%
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
+
 
 #===============#
 #### THE END ####
