@@ -18,35 +18,37 @@ ui <- shiny::tagList(
 
       title = "EUTIC",
 
+      # Tab: Hogares ------------------------------------------------------------
 
-      # Tab: Hogares - Dispositivos ---------------------------------------------
       shiny::tabPanel(
 
-         title = "Hogares - Dispositivos",
+         title = "Hogares",
 
          shiny::sidebarPanel(
 
             shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
 
             shiny::radioButtons(
-               inputId = "hogares_que_tienen_dispositivo",
+               inputId = "hogares",
                label = "Hogares que tengan:",
                choiceNames = base::list(
                   shiny::icon("desktop"),
                   shiny::icon("laptop"),
-                  shiny::icon("tablet")
+                  shiny::icon("tablet"),
+                  shiny::icon("at")
                ),
                choiceValues = base::list(
                   "tiene_desktop",
                   "tiene_laptop",
-                  "tiene_tablet"
+                  "tiene_tablet",
+                  "tiene_internet"
                ),
                selected = "tiene_desktop",
                inline = TRUE
             ),
 
             shiny::radioButtons(
-               inputId = "resultados_por_hogares_dispositivos",
+               inputId = "hogares_graficar_segun",
                label = "Graficar según:",
                choiceNames = base::list(
                   shiny::icon("map-marked-alt"),
@@ -61,7 +63,7 @@ ui <- shiny::tagList(
             ),
 
             shiny::selectInput(
-               inputId = "localidad_dispositivos",
+               inputId = "hogares_localidad",
                label = "Localidad:",
                choices = base::levels(eutic$localidad),
                selected = base::levels(eutic$localidad),
@@ -69,7 +71,7 @@ ui <- shiny::tagList(
             ),
 
             shiny::selectInput(
-               inputId = "ingresos_dispositivos",
+               inputId = "hogares_ingresos",
                label = "Nivel de ingresos del hogar:",
                choices = base::levels(eutic$ingresos_total),
                selected = base::levels(eutic$ingresos_total),
@@ -87,87 +89,16 @@ ui <- shiny::tagList(
 
          shiny::mainPanel(
 
-            plotly::plotlyOutput(outputId = "plotly_hogares_dispositivos"),
+            plotly::plotlyOutput(outputId = "hogares_plot_uno"),
 
-            plotly::plotlyOutput(outputId = "plotly_cantidad_dispositivos_hogar")
-
-         )
-
-      ),
-
-      # Tab: Hogares - Internet -------------------------------------------------
-      shiny::tabPanel(
-
-         title = "Hogares - Internet",
-
-         shiny::sidebarPanel(
-
-            shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
-
-            shiny::radioButtons(
-               inputId = "hogares_que_tienen_internet",
-               label = "Hogares que tengan:",
-               choiceNames = base::list(
-                  "Internet"
-               ),
-               choiceValues = base::list(
-                  "tiene_internet"
-               ),
-               selected = "tiene_internet",
-               inline = TRUE
-            ),
-
-            shiny::radioButtons(
-               inputId = "resultados_por_hogares_conexion",
-               label = "Graficar según:",
-               choiceNames = base::list(
-                  shiny::icon("map-marked-alt"),
-                  shiny::icon("dollar-sign")
-               ),
-               choiceValues = base::list(
-                  "localidad",
-                  "ingresos_total"
-               ),
-               selected = "localidad",
-               inline = TRUE
-            ),
-
-            shiny::selectInput(
-               inputId = "localidad_conexion",
-               label = "Localidad:",
-               choices = base::levels(eutic$localidad),
-               selected = base::levels(eutic$localidad),
-               multiple = TRUE
-            ),
-
-            shiny::selectInput(
-               inputId = "ingresos_conexion",
-               label = "Nivel de ingresos del hogar:",
-               choices = base::levels(eutic$ingresos_total),
-               selected = base::levels(eutic$ingresos_total),
-               multiple = TRUE
-            ),
-
-            shiny::p("Fuente: Instituto Nacional de Estadística"),
-
-            shiny::p(
-               "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
-               los hogares de menores ingresos del país."
-            )
-
-         ),
-
-         shiny::mainPanel(
-
-            plotly::plotlyOutput(outputId = "hogares_internet"),
-
-            plotly::plotlyOutput(outputId = "hogares_tipo_conexion")
+            plotly::plotlyOutput(outputId = "hogares_plot_dos")
 
          )
 
       ),
 
       # Tab: Personas - Uso TICs ------------------------------------------------
+
       shiny::tabPanel(
 
          title = "Personas - Uso de TICs",
@@ -278,6 +209,7 @@ ui <- shiny::tagList(
       ),
 
       # Tab: Personas - Internet ------------------------------------------------
+
       shiny::tabPanel(
 
          title = "Personas - Uso de Internet",
@@ -469,7 +401,7 @@ server <- function(input, output) {
 
    }
 
-   plotly_hogares_cantidad <- function(.data, group_var_1, group_var_2, filter_var = group_var_2) {
+   plotly_hogares_cantidad_dispositivos <- function(.data, group_var_1, group_var_2, filter_var = group_var_2) {
 
       xaxis_title <- dplyr::case_when(
          group_var_1 == "localidad" ~ "Localidad",
@@ -477,9 +409,9 @@ server <- function(input, output) {
       )
 
       legend_title <- dplyr::case_when(
-         group_var_2 == "tiene_desktop" ~ "Cantidad de desktops en el hogar<br>(para hogares que tienen)",
-         group_var_2 == "tiene_laptop" ~ "Cantidad de laptops en el hogar<br>(para hogares que tienen)",
-         group_var_2 == "tiene_tablet" ~ "Cantidad de tablets en el hogar<br>(para hogares que tienen)"
+         group_var_2 == "tiene_desktop" ~ "Cantidad de desktops en el hogar<br> (para hogares que tienen)",
+         group_var_2 == "tiene_laptop" ~ "Cantidad de laptops en el hogar<br> (para hogares que tienen)",
+         group_var_2 == "tiene_tablet" ~ "Cantidad de tablets en el hogar<br> (para hogares que tienen)"
       )
 
       .data %>%
@@ -667,7 +599,7 @@ server <- function(input, output) {
             ),
             legend = base::list(
                title = base::list(
-                  text = base::paste("<b>", "Tipo de conexión<br>(para hogares que tienen)", "</b>")
+                  text = base::paste("<b>", "Tipo de conexión<br> (para hogares que tienen)", "</b>")
                ),
                bgcolor = "#E2E2E2",
                orientation = "h",
@@ -946,65 +878,51 @@ server <- function(input, output) {
 
    }
 
-   # Tab: Hogares - Dispositivos ---------------------------------------------
+   # Tab: Hogares ------------------------------------------------------------
 
-   output$plotly_hogares_dispositivos <- plotly::renderPlotly({
+   output$hogares_plot_uno <- plotly::renderPlotly({
 
       eutic %>%
          dplyr::filter(
-            localidad %in% input$localidad_dispositivos,
-            ingresos_total %in% input$ingresos_dispositivos
+            localidad %in% input$hogares_localidad,
+            ingresos_total %in% input$hogares_ingresos
          ) %>%
          plotly_hogares_tienen(
-            group_var_1 = input$resultados_por_hogares_dispositivos,
-            group_var_2 = input$hogares_que_tienen_dispositivo
+            group_var_1 = input$hogares_graficar_segun,
+            group_var_2 = input$hogares
          )
 
    })
 
-   output$plotly_cantidad_dispositivos_hogar <- plotly::renderPlotly({
+   output$hogares_plot_dos <- plotly::renderPlotly({
 
-      eutic %>%
-         dplyr::filter(
-            localidad %in% input$localidad_dispositivos,
-            ingresos_total %in% input$ingresos_dispositivos
-         ) %>%
-         plotly_hogares_cantidad(
-            group_var_1 = input$resultados_por_hogares_dispositivos,
-            group_var_2 = input$hogares_que_tienen_dispositivo
-         )
+      if (input$hogares == "tiene_internet") {
 
-   })
+         eutic %>%
+            dplyr::filter(
+               localidad %in% input$hogares_localidad,
+               ingresos_total %in% input$hogares_ingresos
+            ) %>%
+            genera_data_tipo_conexion(
+               group_by_var = input$hogares_graficar_segun
+            ) %>%
+            plotly_tipo_conexion(
+               group_by_var = input$hogares_graficar_segun
+            )
 
-   # Tab: Hogares - Conexión -------------------------------------------------
+      } else {
 
-   output$hogares_internet <- plotly::renderPlotly({
+         eutic %>%
+            dplyr::filter(
+               localidad %in% input$hogares_localidad,
+               ingresos_total %in% input$hogares_ingresos
+            ) %>%
+            plotly_hogares_cantidad_dispositivos(
+               group_var_1 = input$hogares_graficar_segun,
+               group_var_2 = input$hogares
+            )
 
-      eutic %>%
-         dplyr::filter(
-            localidad %in% input$localidad_conexion,
-            ingresos_total %in% input$ingresos_conexion
-         ) %>%
-         plotly_hogares_tienen(
-            group_var_1 = input$resultados_por_hogares_conexion,
-            group_var_2 = input$hogares_que_tienen_internet
-         )
-
-   })
-
-   output$hogares_tipo_conexion <- plotly::renderPlotly({
-
-      eutic %>%
-         dplyr::filter(
-            localidad %in% input$localidad_conexion,
-            ingresos_total %in% input$ingresos_conexion
-         ) %>%
-         genera_data_tipo_conexion(
-            group_by_var = input$resultados_por_hogares_conexion
-         ) %>%
-         plotly_tipo_conexion(
-            group_by_var = input$resultados_por_hogares_conexion
-         )
+      }
 
    })
 
