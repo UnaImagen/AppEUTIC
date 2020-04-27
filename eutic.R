@@ -126,7 +126,10 @@ eutic %<>%
       uso_pc = forcats::as_factor(p27),
 
       ## Uso Internet
-      uso_internet = forcats::as_factor(p37),
+      uso_internet = base::as.integer(p37),
+      uso_internet = dplyr::if_else(p40 == 0, 2L, uso_internet),
+      uso_internet = dplyr::if_else(uso_internet == 1L, "Sí", "No"),
+      uso_internet = forcats::as_factor(uso_internet),
       frecuencia_uso_internet = forcats::as_factor(p40),
       frecuencia_uso_internet = forcats::fct_recode(
          .f = frecuencia_uso_internet,
@@ -151,7 +154,6 @@ eutic %<>%
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
-
 
 #===============#
 #### THE END ####
