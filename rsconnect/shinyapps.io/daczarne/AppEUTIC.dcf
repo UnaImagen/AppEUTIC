@@ -5,9 +5,9 @@ account: daczarne
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2183201
-bundleId: 3068450
+bundleId: 3069523
 url: https://daczarne.shinyapps.io/AppEUTIC/
-when: 1587933369.42123
+when: 1587953899.85846
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: BASE HOGARES Y PERSONAS EUTIC 2016.sav|Diccionario de variables EUTIC 2016.xls|eutic.R|LICENSE|Principales resultados de la EUTIC 2016.pdf|README.md
