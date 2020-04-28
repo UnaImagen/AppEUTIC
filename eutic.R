@@ -149,11 +149,21 @@ eutic %<>%
          "Menos de una vez al mes",
          "No utiliza",
          "No recuerda"
-      )
-
+      ),
+      usos_internet_comms = dplyr::if_else(p43_1_1 == 1, "Sí", "No"),
+      usos_internet_comms = forcats::as_factor(usos_internet_comms),
+      usos_internet_laboral = dplyr::if_else(p43_1_2 == 1, "Sí", "No"),
+      usos_internet_laboral = forcats::as_factor(usos_internet_laboral),
+      usos_internet_estudio = dplyr::if_else(p43_1_3 == 1, "Sí", "No"),
+      usos_internet_estudio = forcats::as_factor(usos_internet_estudio),
+      usos_internet_ocio = dplyr::if_else(p43_1_4 == 1, "Sí", "No"),
+      usos_internet_ocio = forcats::as_factor(usos_internet_ocio),
+      usos_internet_otro = dplyr::if_else(p43_1_5 == 1, "Sí", "No"),
+      usos_internet_otro = forcats::as_factor(usos_internet_otro)
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
+
 
 #===============#
 #### THE END ####
