@@ -108,16 +108,16 @@ eutic %<>%
          uso_celular_comun == "Sí" & uso_smart_phone == "Sí" ~ "Utiliza Smart Phone",
          TRUE ~ NA_character_
       ),
-      uso_celular_llamadas = dplyr::if_else(p25_1_1 == 1 | p25_1_2 == 1, "Sí", "No"),
-      uso_celular_llamadas = forcats::as_factor(uso_celular_llamadas),
-      uso_celular_mensajes = dplyr::if_else(p25_1_3 == 1 | p25_1_15 == 1 | p25_1_16 == 1, "Sí", "No"),
-      uso_celular_mensajes = forcats::as_factor(uso_celular_mensajes),
-      uso_celular_multimedia_y_redes = dplyr::if_else(p25_1_5 == 1 | p25_1_6 == 1 | p25_1_8 == 1 | p25_1_9 == 1 | p25_1_10 == 1, "Sí", "No"),
-      uso_celular_multimedia_y_redes = forcats::as_factor(uso_celular_multimedia_y_redes),
-      uso_celular_informacion = dplyr::if_else(p25_1_7 == 1 | p25_1_12 == 1, "Sí", "No"),
-      uso_celular_informacion = forcats::as_factor(uso_celular_informacion),
-      uso_celular_compras = dplyr::if_else(p25_1_11 == 1 | p25_1_13 == 1 | p25_1_14 == 1, "Sí", "No"),
-      uso_celular_compras = forcats::as_factor(uso_celular_compras),
+      usos_celular_llamadas = dplyr::if_else(p25_1_1 == 1 | p25_1_2 == 1, "Sí", "No"),
+      usos_celular_llamadas = forcats::as_factor(usos_celular_llamadas),
+      usos_celular_mensajes = dplyr::if_else(p25_1_3 == 1 | p25_1_15 == 1 | p25_1_16 == 1, "Sí", "No"),
+      usos_celular_mensajes = forcats::as_factor(usos_celular_mensajes),
+      usos_celular_multimedia_y_redes = dplyr::if_else(p25_1_5 == 1 | p25_1_6 == 1 | p25_1_8 == 1 | p25_1_9 == 1 | p25_1_10 == 1, "Sí", "No"),
+      usos_celular_multimedia_y_redes = forcats::as_factor(usos_celular_multimedia_y_redes),
+      usos_celular_informacion = dplyr::if_else(p25_1_7 == 1 | p25_1_12 == 1, "Sí", "No"),
+      usos_celular_informacion = forcats::as_factor(usos_celular_informacion),
+      usos_celular_compras = dplyr::if_else(p25_1_11 == 1 | p25_1_13 == 1 | p25_1_14 == 1, "Sí", "No"),
+      usos_celular_compras = forcats::as_factor(usos_celular_compras),
 
       ## Uso de tablet
       uso_tablet = forcats::as_factor(p26),
@@ -150,6 +150,26 @@ eutic %<>%
          "No utiliza",
          "No recuerda"
       ),
+      frecuencia_uso_internet_celular = forcats::as_factor(p40_1),
+      frecuencia_uso_internet_celular = forcats::fct_recode(
+         .f = frecuencia_uso_internet_celular,
+         "Entre una y tres veces al día" = "Diariamente,entre una y tres veces al dia",
+         "Cuatro o más veces al día" = "Diariamente,cuatro o mas veces al dia",
+         "Al menos una vez a la semana" = "Al menos una vez a la semana pero no todos los días",
+         "Al menos una vez al mes" = "Al menos una vez al mes pero no todas las semanas",
+         "No recuerda" = "No recuerda o muy irregularmente (no leer)",
+         "No utiliza" = "0"
+      ),
+      frecuencia_uso_internet_celular = forcats::fct_relevel(
+         .f = frecuencia_uso_internet_celular,
+         "Cuatro o más veces al día",
+         "Entre una y tres veces al día",
+         "Al menos una vez a la semana",
+         "Al menos una vez al mes",
+         "Menos de una vez al mes",
+         "No utiliza",
+         "No recuerda"
+      ),
       usos_internet_comms = dplyr::if_else(p43_1_1 == 1, "Sí", "No"),
       usos_internet_comms = forcats::as_factor(usos_internet_comms),
       usos_internet_laboral = dplyr::if_else(p43_1_2 == 1, "Sí", "No"),
@@ -163,7 +183,6 @@ eutic %<>%
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
-
 
 #===============#
 #### THE END ####
