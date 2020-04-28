@@ -208,7 +208,9 @@ ui <- shiny::tagList(
 
             plotly::plotlyOutput(outputId = "personas_plot_uno"),
 
-            plotly::plotlyOutput(outputId = "personas_plot_dos")
+            plotly::plotlyOutput(outputId = "personas_plot_dos"),
+
+            plotly::plotlyOutput(outputId = "personas_plot_tres")
 
          )
 
@@ -507,9 +509,9 @@ server <- function(input, output) {
 
    }
 
-   plotly_personas_uso_tic <- function(.data, group_var_1, group_var_2) {
+   plotly_personas_uso_tic <- function(.data, group_var_1, group_var_2, plotly_legend_y = -0.30) {
 
-      colors <- dplyr::if_else(group_var_2 == "frecuencia_uso_internet", "Accent", "Paired")
+      colors <- dplyr::if_else(group_var_2 %in% base::c("frecuencia_uso_internet", "frecuencia_uso_internet_celular"), "Accent", "Paired")
 
       xaxis_title <- dplyr::case_when(
          group_var_1 == "localidad" ~ "Localidad",
@@ -523,7 +525,8 @@ server <- function(input, output) {
          group_var_2 == "uso_tablet" ~ "¿Utilizó una tablet en los<br> últimos 3 meses?",
          group_var_2 == "uso_pc" ~ "¿Utilizó una PC en los<br> últimos 3 meses?",
          group_var_2 == "uso_internet" ~ "¿Utilizó alguna vez Internet?",
-         group_var_2 == "frecuencia_uso_internet" ~ "¿Con qué frecuencia utilizó<br> Internet en los últimos<br> 3 meses? (para quienes lo<br> utilizaron)"
+         group_var_2 == "frecuencia_uso_internet" ~ "¿Con qué frecuencia utilizó<br> Internet en los últimos<br> 3 meses? (para quienes lo<br> utilizaron)",
+         group_var_2 == "frecuencia_uso_internet_celular" ~ "¿Con qué frecuencia utilizó Internet<br> en el celular en los últimos 3 meses?<br> (para quienes lo utilizaron)"
       )
 
       .data %>%
@@ -569,7 +572,7 @@ server <- function(input, output) {
                orientation = "h",
                yanchor = "bottom",
                xanchor = "left",
-               y = -.60
+               y = plotly_legend_y
             ),
             hovermode = "x"
          ) %>%
@@ -580,7 +583,7 @@ server <- function(input, output) {
 
    }
 
-   generar_data_uso_celular <- function(.data, group_by_var) {
+   generar_data_usos_celular <- function(.data, group_by_var) {
 
       ## Genera data uso celular llamadas
       aux_data <- .data %>%
@@ -589,7 +592,7 @@ server <- function(input, output) {
          ) %>%
          dplyr::group_by(
             group_by_var,
-            uso_celular_llamadas
+            usos_celular_llamadas
          ) %>%
          dplyr::summarise(
             n = base::sum(peso_hogar, na.rm = TRUE)
@@ -599,7 +602,7 @@ server <- function(input, output) {
          ) %>%
          dplyr::ungroup() %>%
          dplyr::filter(
-            uso_celular_llamadas == "Sí"
+            usos_celular_llamadas == "Sí"
          ) %>%
          dplyr::transmute(
             group_by_var,
@@ -617,7 +620,7 @@ server <- function(input, output) {
                ) %>%
                dplyr::group_by(
                   group_by_var,
-                  uso_celular_mensajes
+                  usos_celular_mensajes
                ) %>%
                dplyr::summarise(
                   n = base::sum(peso_hogar, na.rm = TRUE)
@@ -627,7 +630,7 @@ server <- function(input, output) {
                ) %>%
                dplyr::ungroup() %>%
                dplyr::filter(
-                  uso_celular_mensajes == "Sí"
+                  usos_celular_mensajes == "Sí"
                ) %>%
                dplyr::transmute(
                   group_by_var,
@@ -642,7 +645,7 @@ server <- function(input, output) {
                ) %>%
                dplyr::group_by(
                   group_by_var,
-                  uso_celular_multimedia_y_redes
+                  usos_celular_multimedia_y_redes
                ) %>%
                dplyr::summarise(
                   n = base::sum(peso_hogar, na.rm = TRUE)
@@ -652,7 +655,7 @@ server <- function(input, output) {
                ) %>%
                dplyr::ungroup() %>%
                dplyr::filter(
-                  uso_celular_multimedia_y_redes == "Sí"
+                  usos_celular_multimedia_y_redes == "Sí"
                ) %>%
                dplyr::transmute(
                   group_by_var,
@@ -667,7 +670,7 @@ server <- function(input, output) {
                ) %>%
                dplyr::group_by(
                   group_by_var,
-                  uso_celular_informacion
+                  usos_celular_informacion
                ) %>%
                dplyr::summarise(
                   n = base::sum(peso_hogar, na.rm = TRUE)
@@ -677,7 +680,7 @@ server <- function(input, output) {
                ) %>%
                dplyr::ungroup() %>%
                dplyr::filter(
-                  uso_celular_informacion == "Sí"
+                  usos_celular_informacion == "Sí"
                ) %>%
                dplyr::transmute(
                   group_by_var,
@@ -692,7 +695,7 @@ server <- function(input, output) {
                ) %>%
                dplyr::group_by(
                   group_by_var,
-                  uso_celular_compras
+                  usos_celular_compras
                ) %>%
                dplyr::summarise(
                   n = base::sum(peso_hogar, na.rm = TRUE)
@@ -702,7 +705,7 @@ server <- function(input, output) {
                ) %>%
                dplyr::ungroup() %>%
                dplyr::filter(
-                  uso_celular_compras == "Sí"
+                  usos_celular_compras == "Sí"
                ) %>%
                dplyr::transmute(
                   group_by_var,
@@ -723,7 +726,150 @@ server <- function(input, output) {
 
    }
 
-   plotly_usos_celular <- function(.data, group_by_var) {
+   generar_data_usos_internet <- function(.data, group_by_var) {
+
+      ## Genera data uso celular llamadas
+      aux_data <- .data %>%
+         dplyr::mutate(
+            group_by_var = !!rlang::sym(group_by_var)
+         ) %>%
+         dplyr::group_by(
+            group_by_var,
+            usos_internet_comms
+         ) %>%
+         dplyr::summarise(
+            n = base::sum(peso_hogar, na.rm = TRUE)
+         ) %>%
+         dplyr::mutate(
+            proporcion = n / base::sum(n, na.rm = TRUE)
+         ) %>%
+         dplyr::ungroup() %>%
+         dplyr::filter(
+            usos_internet_comms == "Sí"
+         ) %>%
+         dplyr::transmute(
+            group_by_var,
+            tipo_uso = "comms",
+            proporcion
+         )
+
+      aux_data %<>%
+         dplyr::bind_rows(
+
+            ## Genera data uso celular mensajes
+            .data %>%
+               dplyr::mutate(
+                  group_by_var = !!rlang::sym(group_by_var)
+               ) %>%
+               dplyr::group_by(
+                  group_by_var,
+                  usos_internet_laboral
+               ) %>%
+               dplyr::summarise(
+                  n = base::sum(peso_hogar, na.rm = TRUE)
+               ) %>%
+               dplyr::mutate(
+                  proporcion = n / base::sum(n, na.rm = TRUE)
+               ) %>%
+               dplyr::ungroup() %>%
+               dplyr::filter(
+                  usos_internet_laboral == "Sí"
+               ) %>%
+               dplyr::transmute(
+                  group_by_var,
+                  tipo_uso = "laboral",
+                  proporcion
+               ),
+
+            ## Genera data uso celular multimedia y redes
+            .data %>%
+               dplyr::mutate(
+                  group_by_var = !!rlang::sym(group_by_var)
+               ) %>%
+               dplyr::group_by(
+                  group_by_var,
+                  usos_internet_estudio
+               ) %>%
+               dplyr::summarise(
+                  n = base::sum(peso_hogar, na.rm = TRUE)
+               ) %>%
+               dplyr::mutate(
+                  proporcion = n / base::sum(n, na.rm = TRUE)
+               ) %>%
+               dplyr::ungroup() %>%
+               dplyr::filter(
+                  usos_internet_estudio == "Sí"
+               ) %>%
+               dplyr::transmute(
+                  group_by_var,
+                  tipo_uso = "estudio",
+                  proporcion
+               ),
+
+            ## Genera data uso celular buscar información
+            .data %>%
+               dplyr::mutate(
+                  group_by_var = !!rlang::sym(group_by_var)
+               ) %>%
+               dplyr::group_by(
+                  group_by_var,
+                  usos_internet_ocio
+               ) %>%
+               dplyr::summarise(
+                  n = base::sum(peso_hogar, na.rm = TRUE)
+               ) %>%
+               dplyr::mutate(
+                  proporcion = n / base::sum(n, na.rm = TRUE)
+               ) %>%
+               dplyr::ungroup() %>%
+               dplyr::filter(
+                  usos_internet_ocio == "Sí"
+               ) %>%
+               dplyr::transmute(
+                  group_by_var,
+                  tipo_uso = "ocio",
+                  proporcion
+               ),
+
+            ## Genera data uso celular compras
+            .data %>%
+               dplyr::mutate(
+                  group_by_var = !!rlang::sym(group_by_var)
+               ) %>%
+               dplyr::group_by(
+                  group_by_var,
+                  usos_internet_otro
+               ) %>%
+               dplyr::summarise(
+                  n = base::sum(peso_hogar, na.rm = TRUE)
+               ) %>%
+               dplyr::mutate(
+                  proporcion = n / base::sum(n, na.rm = TRUE)
+               ) %>%
+               dplyr::ungroup() %>%
+               dplyr::filter(
+                  usos_internet_otro == "Sí"
+               ) %>%
+               dplyr::transmute(
+                  group_by_var,
+                  tipo_uso = "otro",
+                  proporcion
+               )
+         ) %>%
+         dplyr::mutate(
+            tipo_uso = dplyr::case_when(
+               tipo_uso == "comms" ~ "Comunicación",
+               tipo_uso == "laboral" ~ "Laboral",
+               tipo_uso == "estudio" ~ "Estudio",
+               tipo_uso == "ocio" ~ "Ocio",
+               tipo_uso == "otro" ~ "Otras"
+            ),
+            tipo_uso = forcats::as_factor(tipo_uso)
+         )
+
+   }
+
+   plotly_personas_usos_tics <- function(.data, group_by_var, plotly_legend_y = -0.3) {
 
       xaxis_title <- dplyr::case_when(
          group_by_var == "localidad" ~ "Localidad",
@@ -738,7 +884,7 @@ server <- function(input, output) {
             x = ~group_by_var,
             y = ~proporcion,
             color = ~tipo_uso,
-            colors = "Accent",
+            colors = "Set3",
             type = "bar",
             hovertemplate = ~base::paste0(
                "%{y:0.2%}"
@@ -754,13 +900,13 @@ server <- function(input, output) {
             ),
             legend = base::list(
                title = base::list(
-                  text = base::paste("<b>", "Usos", "</b>")
+                  text = base::paste("<b>", "Activdades realizadas durante<br> los últimos 3 meses", "</b>")
                ),
                bgcolor = "#E2E2E2",
                orientation = "h",
                yanchor = "bottom",
                xanchor = "left",
-               y = -.60
+               y = plotly_legend_y
             ),
             hovermode = "x"
          ) %>%
@@ -850,7 +996,8 @@ server <- function(input, output) {
             ) %>%
             plotly_personas_uso_tic(
                group_var_1 = input$personas_graficar_segun,
-               group_var_2 = input$personas
+               group_var_2 = input$personas,
+               plotly_legend_y = -0.50
             )
 
       }
@@ -863,17 +1010,20 @@ server <- function(input, output) {
 
          eutic %>%
             dplyr::filter(
+               uso_internet == "Sí"
+            ) %>%
+            base::droplevels() %>%
+            dplyr::filter(
                localidad %in% input$localidad_personas,
                ingresos_total %in% input$ingresos_personas,
                dplyr::between(edad, input$edad_personas[1], input$edad_personas[2]),
                sexo %in% input$sexo_personas,
                nivel_educ %in% input$nivel_educ_personas
             ) %>%
-            generar_data_uso_celular(
-               group_by_var = input$personas_graficar_segun
-            ) %>%
-            plotly_usos_celular(
-               group_by_var = input$personas_graficar_segun
+            plotly_personas_uso_tic(
+               group_var_1 = input$personas_graficar_segun,
+               group_var_2 = "frecuencia_uso_internet_celular",
+               plotly_legend_y = -0.60
             )
 
       } else if (input$personas == "uso_internet") {
@@ -892,7 +1042,50 @@ server <- function(input, output) {
             ) %>%
             plotly_personas_uso_tic(
                group_var_1 = input$personas_graficar_segun,
-               group_var_2 = "frecuencia_uso_internet"
+               group_var_2 = "frecuencia_uso_internet",
+               plotly_legend_y = -0.60
+            )
+
+      }
+
+   })
+
+   output$personas_plot_tres <- plotly::renderPlotly({
+
+      if (input$personas == "uso_celular") {
+
+         eutic %>%
+            dplyr::filter(
+               localidad %in% input$localidad_personas,
+               ingresos_total %in% input$ingresos_personas,
+               dplyr::between(edad, input$edad_personas[1], input$edad_personas[2]),
+               sexo %in% input$sexo_personas,
+               nivel_educ %in% input$nivel_educ_personas
+            ) %>%
+            generar_data_usos_celular(
+               group_by_var = input$personas_graficar_segun
+            ) %>%
+            plotly_personas_usos_tics(
+               group_by_var = input$personas_graficar_segun,
+               plotly_legend_y = -0.40
+            )
+
+      } else if (input$personas == "uso_internet") {
+
+         eutic %>%
+            dplyr::filter(
+               localidad %in% input$localidad_personas,
+               ingresos_total %in% input$ingresos_personas,
+               dplyr::between(edad, input$edad_personas[1], input$edad_personas[2]),
+               sexo %in% input$sexo_personas,
+               nivel_educ %in% input$nivel_educ_personas
+            ) %>%
+            generar_data_usos_internet(
+               group_by_var = input$personas_graficar_segun
+            ) %>%
+            plotly_personas_usos_tics(
+               group_by_var = input$personas_graficar_segun,
+               plotly_legend_y = -0.50
             )
 
       }
