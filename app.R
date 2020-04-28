@@ -10,9 +10,9 @@ eutic <- readr::read_rds(path = "eutic.rds")
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
 
-   # shinythemes::themeSelector(),
-
    shiny::navbarPage(
+
+      collapsible = TRUE,
 
       theme = shinythemes::shinytheme(theme = "flatly"),
 
@@ -22,7 +22,9 @@ ui <- shiny::tagList(
 
       shiny::tabPanel(
 
-         title = "Hogares",
+         icon = shiny::icon("home"),
+
+         title = " Hogares",
 
          shiny::sidebarPanel(
 
@@ -100,6 +102,8 @@ ui <- shiny::tagList(
       # Tab: Personas -----------------------------------------------------------
 
       shiny::tabPanel(
+
+         icon = shiny::icon("user"),
 
          title = "Personas",
 
