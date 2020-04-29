@@ -10,6 +10,8 @@ eutic <- readr::read_rds(path = "eutic.rds")
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
 
+   shiny::includeCSS(path = "style.css"),
+
    shiny::navbarPage(
 
       collapsible = TRUE,
@@ -32,7 +34,7 @@ ui <- shiny::tagList(
 
             shiny::radioButtons(
                inputId = "hogares",
-               label = "Hogares que tengan:",
+               label = "Hogares que tengan...",
                choiceNames = base::list(
                   shiny::icon("desktop"),
                   shiny::icon("laptop"),
@@ -91,9 +93,31 @@ ui <- shiny::tagList(
 
          shiny::mainPanel(
 
-            plotly::plotlyOutput(outputId = "hogares_plot_uno"),
+            shiny::div(
+               class = 'questionDiv',
+               shiny::h4(
+                  shiny::textOutput(
+                     outputId = "hogares_texto_pregunta_uno"
+                  )
+               )
+            ),
 
-            plotly::plotlyOutput(outputId = "hogares_plot_dos")
+            plotly::plotlyOutput(
+               outputId = "hogares_plot_uno"
+            ),
+
+            shiny::div(
+               class = 'questionDiv',
+               shiny::h4(
+                  shiny::textOutput(
+                     outputId = "hogares_texto_pregunta_dos"
+                  )
+               )
+            ),
+
+            plotly::plotlyOutput(
+               outputId = "hogares_plot_dos"
+            )
 
          )
 
@@ -113,17 +137,13 @@ ui <- shiny::tagList(
 
             shiny::radioButtons(
                inputId = "personas",
-               label = "TIC:",
+               label = "Personas que usen...",
                choiceNames = base::list(
                   shiny::icon("mobile-alt"),
-                  shiny::icon("laptop"),
-                  shiny::icon("tablet"),
                   shiny::icon("at")
                ),
                choiceValues = base::list(
                   "uso_celular",
-                  "uso_pc",
-                  "uso_tablet",
                   "uso_internet"
                ),
                selected = "uso_celular",
@@ -206,11 +226,44 @@ ui <- shiny::tagList(
 
          shiny::mainPanel(
 
-            plotly::plotlyOutput(outputId = "personas_plot_uno"),
+            shiny::div(
+               class = 'questionDiv',
+               shiny::h4(
+                  shiny::textOutput(
+                     outputId = "personas_texto_pregunta_uno"
+                  )
+               )
+            ),
 
-            plotly::plotlyOutput(outputId = "personas_plot_dos"),
+            plotly::plotlyOutput(
+               outputId = "personas_plot_uno"
+            ),
 
-            plotly::plotlyOutput(outputId = "personas_plot_tres")
+            shiny::div(
+               class = 'questionDiv',
+               shiny::h4(
+                  shiny::textOutput(
+                     outputId = "personas_texto_pregunta_dos"
+                  )
+               )
+            ),
+
+            plotly::plotlyOutput(
+               outputId = "personas_plot_dos"
+            ),
+
+            shiny::div(
+               class = 'questionDiv',
+               shiny::h4(
+                  shiny::textOutput(
+                     outputId = "personas_texto_pregunta_tres"
+                  )
+               )
+            ),
+
+            plotly::plotlyOutput(
+               outputId = "personas_plot_tres"
+            )
 
          )
 
@@ -230,13 +283,6 @@ server <- function(input, output) {
       xaxis_title <- dplyr::case_when(
          group_var_1 == "localidad" ~ "Localidad",
          group_var_1 == "ingresos_total" ~ "Nivel de ingresos"
-      )
-
-      legend_title <- dplyr::case_when(
-         group_var_2 == "tiene_desktop" ~ "¿Tiene desktop en el hogar?",
-         group_var_2 == "tiene_laptop" ~ "¿Tiene laptop en el hogar?",
-         group_var_2 == "tiene_tablet" ~ "¿Tiene tablet en el hogar?",
-         group_var_2 == "tiene_internet" ~ "¿Tiene internet en el hogar?"
       )
 
       .data %>%
@@ -276,14 +322,11 @@ server <- function(input, output) {
                tickformat = "%"
             ),
             legend = base::list(
-               title = base::list(
-                  text = base::paste("<b>", legend_title, "</b>")
-               ),
                bgcolor = "#E2E2E2",
                orientation = "h",
                yanchor = "bottom",
                xanchor = "left",
-               y = -.40
+               y = -.30
             ),
             hovermode = "x"
          ) %>%
@@ -299,12 +342,6 @@ server <- function(input, output) {
       xaxis_title <- dplyr::case_when(
          group_var_1 == "localidad" ~ "Localidad",
          group_var_1 == "ingresos_total" ~ "Nivel de ingresos"
-      )
-
-      legend_title <- dplyr::case_when(
-         group_var_2 == "tiene_desktop" ~ "Cantidad de desktops en el hogar<br> (para hogares que tienen)",
-         group_var_2 == "tiene_laptop" ~ "Cantidad de laptops en el hogar<br> (para hogares que tienen)",
-         group_var_2 == "tiene_tablet" ~ "Cantidad de tablets en el hogar<br> (para hogares que tienen)"
       )
 
       .data %>%
@@ -353,14 +390,11 @@ server <- function(input, output) {
                tickformat = "%"
             ),
             legend = base::list(
-               title = base::list(
-                  text = base::paste("<b>", legend_title, "</b>")
-               ),
                bgcolor = "#E2E2E2",
                orientation = "h",
                yanchor = "bottom",
                xanchor = "left",
-               y = -.45
+               y = -.30
             ),
             hovermode = "x"
          ) %>%
@@ -491,9 +525,6 @@ server <- function(input, output) {
                tickformat = "%"
             ),
             legend = base::list(
-               title = base::list(
-                  text = base::paste("<b>", "Tipo de conexión<br> (para hogares que tienen)", "</b>")
-               ),
                bgcolor = "#E2E2E2",
                orientation = "h",
                yanchor = "bottom",
@@ -518,15 +549,6 @@ server <- function(input, output) {
          group_var_1 == "ingresos_total" ~ "Nivel del ingresos (del hogar)",
          group_var_1 == "sexo" ~ "Sexo",
          group_var_1 == "nivel_educ" ~ "Nivel educativo"
-      )
-
-      legend_title <- dplyr::case_when(
-         group_var_2 == "uso_celular" ~ "¿Utilizó un celular en los<br> últimos 3 meses?",
-         group_var_2 == "uso_tablet" ~ "¿Utilizó una tablet en los<br> últimos 3 meses?",
-         group_var_2 == "uso_pc" ~ "¿Utilizó una PC en los<br> últimos 3 meses?",
-         group_var_2 == "uso_internet" ~ "¿Utilizó alguna vez Internet?",
-         group_var_2 == "frecuencia_uso_internet" ~ "¿Con qué frecuencia utilizó<br> Internet en los últimos<br> 3 meses? (para quienes lo<br> utilizaron)",
-         group_var_2 == "frecuencia_uso_internet_celular" ~ "¿Con qué frecuencia utilizó Internet<br> en el celular en los últimos 3 meses?<br> (para quienes lo utilizaron)"
       )
 
       .data %>%
@@ -565,9 +587,6 @@ server <- function(input, output) {
                tickformat = "%"
             ),
             legend = base::list(
-               title = base::list(
-                  text = base::paste("<b>", legend_title, "</b>")
-               ),
                bgcolor = "#E2E2E2",
                orientation = "h",
                yanchor = "bottom",
@@ -899,9 +918,6 @@ server <- function(input, output) {
                tickformat = "%"
             ),
             legend = base::list(
-               title = base::list(
-                  text = base::paste("<b>", "Activdades realizadas durante<br> los últimos 3 meses", "</b>")
-               ),
                bgcolor = "#E2E2E2",
                orientation = "h",
                yanchor = "bottom",
@@ -919,6 +935,21 @@ server <- function(input, output) {
 
    # Tab: Hogares ------------------------------------------------------------
 
+   output$hogares_texto_pregunta_uno <- shiny::renderText({
+
+      texto_pregunta <- dplyr::case_when(
+
+         input$hogares == "tiene_desktop" ~ "¿Tiene computadora tradicional o de escritorio en el hogar?",
+         input$hogares == "tiene_laptop" ~ "¿Tiene laptop, netbook o similar enn el hogar?",
+         input$hogares == "tiene_tablet" ~ "¿Tiene tablet en el hogar?",
+         input$hogares == "tiene_internet" ~ "¿Tiene su hogar conexión a Internet?"
+
+      )
+
+      base::paste("Pregunta:", texto_pregunta)
+
+   })
+
    output$hogares_plot_uno <- plotly::renderPlotly({
 
       eutic %>%
@@ -930,6 +961,21 @@ server <- function(input, output) {
             group_var_1 = input$hogares_graficar_segun,
             group_var_2 = input$hogares
          )
+
+   })
+
+   output$hogares_texto_pregunta_dos <- shiny::renderText({
+
+      texto_pregunta <- dplyr::case_when(
+
+         input$hogares == "tiene_desktop" ~ "¿Cuántas? (para los hogares que tienen)",
+         input$hogares == "tiene_laptop" ~ "¿Cuántas? (para los hogares que tienen)",
+         input$hogares == "tiene_tablet" ~ "¿Cuántas? (para los hogares que tienen)",
+         input$hogares == "tiene_internet" ~ "¿Qué tipos de conexión a Internet tiene en su hogar? (para los hogares que tienen)"
+
+      )
+
+      base::paste("Pregunta:", texto_pregunta)
 
    })
 
@@ -967,6 +1013,19 @@ server <- function(input, output) {
 
    # Tab: Personas -----------------------------------------------------------
 
+   output$personas_texto_pregunta_uno <- shiny::renderText({
+
+      texto_pregunta <- dplyr::case_when(
+
+         input$personas == "uso_celular" ~ "¿Utilizó un celular en los últimos 3 meses?",
+         input$personas == "uso_internet" ~ "¿Utilizó alguna vez Internet?",
+
+      )
+
+      base::paste("Pregunta:", texto_pregunta)
+
+   })
+
    output$personas_plot_uno <- plotly::renderPlotly({
 
       if (input$personas == "uso_internet") {
@@ -996,11 +1055,23 @@ server <- function(input, output) {
             ) %>%
             plotly_personas_uso_tic(
                group_var_1 = input$personas_graficar_segun,
-               group_var_2 = input$personas,
-               plotly_legend_y = -0.50
+               group_var_2 = input$personas
             )
 
       }
+
+   })
+
+   output$personas_texto_pregunta_dos <- shiny::renderText({
+
+      texto_pregunta <- dplyr::case_when(
+
+         input$personas == "uso_celular" ~ "¿Con qué frecuencia utilizó Internet en el celular en los últimos 3 meses? (para quienes lo utilizaron)",
+         input$personas == "uso_internet" ~ "¿Con qué frecuencia utilizó Internet en los últimos 3 meses? (para quienes lo utilizaron)"
+
+      )
+
+      base::paste("Pregunta:", texto_pregunta)
 
    })
 
@@ -1023,7 +1094,7 @@ server <- function(input, output) {
             plotly_personas_uso_tic(
                group_var_1 = input$personas_graficar_segun,
                group_var_2 = "frecuencia_uso_internet_celular",
-               plotly_legend_y = -0.60
+               plotly_legend_y = -0.50
             )
 
       } else if (input$personas == "uso_internet") {
@@ -1043,10 +1114,23 @@ server <- function(input, output) {
             plotly_personas_uso_tic(
                group_var_1 = input$personas_graficar_segun,
                group_var_2 = "frecuencia_uso_internet",
-               plotly_legend_y = -0.60
+               plotly_legend_y = -0.50
             )
 
       }
+
+   })
+
+   output$personas_texto_pregunta_tres <- shiny::renderText({
+
+      texto_pregunta <- dplyr::case_when(
+
+         input$personas == "uso_celular" ~ "En los últimos 3 meses, ¿qué actividades realizó con el celular? (para quienes lo utilizaron",
+         input$personas == "uso_internet" ~ "En los últimos 3 meses, ¿con qué finalidades utilizó Internet? (para quienes lo utilizaron"
+
+      )
+
+      base::paste("Pregunta:", texto_pregunta)
 
    })
 
@@ -1085,7 +1169,7 @@ server <- function(input, output) {
             ) %>%
             plotly_personas_usos_tics(
                group_by_var = input$personas_graficar_segun,
-               plotly_legend_y = -0.50
+               plotly_legend_y = -0.40
             )
 
       }
