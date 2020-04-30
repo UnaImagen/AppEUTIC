@@ -288,13 +288,17 @@ ui <- shiny::tagList(
                   shiny::icon("info"),
                   shiny::icon("book"),
                   shiny::icon("briefcase"),
-                  shiny::icon("comments")
+                  shiny::icon("comments"),
+                  shiny::icon("theater-masks"),
+                  shiny::icon("shopping-cart")
                ),
                choiceValues = base::list(
                   "_buscar_info_",
                   "_estudio_",
                   "_trabajo_",
-                  "_comms_"
+                  "_comms_",
+                  "_ocio_",
+                  "_comercio_"
                ),
                selected = "_buscar_info_",
                inline = TRUE
@@ -1175,6 +1179,19 @@ server <- function(input, output) {
                tipo_uso == "chat" ~ "Chatear",
                tipo_uso == "llamadas" ~ "Llamadas",
                tipo_uso == "date_app" ~ "Apps para conocer gente",
+               tipo_uso == "radio" ~ "Escuchar radio",
+               tipo_uso == "tv" ~ "Ver TV",
+               tipo_uso == "streaming" ~ "Streaming",
+               tipo_uso == "gaming" ~ "Gaming",
+               tipo_uso == "software" ~ "Descargar software",
+               tipo_uso == "leer" ~ "Leer",
+               tipo_uso == "blogging" ~ "Blogging",
+               tipo_uso == "web" ~ "Página web propia",
+               tipo_uso == "storage" ~ "Almacenar archivos online",
+               tipo_uso == "compra" ~ "Compras online",
+               tipo_uso == "venta" ~ "Ventas online",
+               tipo_uso == "banking" ~ "Banca online",
+               tipo_uso == "booking" ~ "Reservas online",
                TRUE ~ tipo_uso
             ),
             tipo_uso = forcats::as_factor(tipo_uso)
@@ -1434,7 +1451,9 @@ server <- function(input, output) {
          input$internet == "_buscar_info_" ~ "En los últimos 3 meses, ¿buscó en Internet información sobre...?",
          input$internet == "_estudio_" ~ "En los últimos 3 meses, ¿qué actividades realizó en Internet vinculadas al estudio?",
          input$internet == "_trabajo_" ~ "En los últimos 3 meses, ¿qué actividades realizó en Internet relacionadas con el trabajo?",
-         input$internet == "_comms_" ~ "En los últimos 3 meses, ¿qué actividades realizó en Internet relacionadas con la comunicación?"
+         input$internet == "_comms_" ~ "En los últimos 3 meses, ¿qué actividades realizó en Internet relacionadas con la comunicación?",
+         input$internet == "_ocio_" ~ "En los últimos 3 meses, ¿qué actividades realizó en Internet relacionadas con el entretenimiento?",
+         input$internet == "_comercio_" ~ "En los últimos 3 meses, ¿qué actividades vinculadas a las transacciones y/o comercio electrónico realizó a través de Internet?"
 
       )
 
@@ -1458,7 +1477,7 @@ server <- function(input, output) {
          ) %>%
          plotly_personas_usos_tics(
             group_by_var = input$internet_graficar_segun,
-            plotly_legend_y = -0.4
+            plotly_legend_y = -0.60
          )
 
    })
