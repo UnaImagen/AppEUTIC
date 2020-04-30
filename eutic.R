@@ -130,6 +130,8 @@ eutic %<>%
       uso_internet = dplyr::if_else(p40 == 0, 2L, uso_internet),
       uso_internet = dplyr::if_else(uso_internet == 1L, "Sí", "No"),
       uso_internet = forcats::as_factor(uso_internet),
+
+      ## Uso Internet - Frecuencia
       frecuencia_uso_internet = forcats::as_factor(p40),
       frecuencia_uso_internet = forcats::fct_recode(
          .f = frecuencia_uso_internet,
@@ -170,6 +172,8 @@ eutic %<>%
          "No utiliza",
          "No recuerda"
       ),
+
+      ## Usos Internet - General
       usos_internet_comms = dplyr::if_else(p43_1_1 == 1, "Sí", "No"),
       usos_internet_comms = forcats::as_factor(usos_internet_comms),
       usos_internet_laboral = dplyr::if_else(p43_1_2 == 1, "Sí", "No"),
@@ -179,7 +183,52 @@ eutic %<>%
       usos_internet_ocio = dplyr::if_else(p43_1_4 == 1, "Sí", "No"),
       usos_internet_ocio = forcats::as_factor(usos_internet_ocio),
       usos_internet_otro = dplyr::if_else(p43_1_5 == 1, "Sí", "No"),
-      usos_internet_otro = forcats::as_factor(usos_internet_otro)
+      usos_internet_otro = forcats::as_factor(usos_internet_otro),
+
+      ## Usos Internet - Buscar info
+      usos_internet_buscar_info_bienes_y_servicios = dplyr::if_else(p44_1 == 1, "Sí", "No"),
+      usos_internet_buscar_info_bienes_y_servicios = forcats::as_factor(usos_internet_buscar_info_bienes_y_servicios),
+      usos_internet_buscar_info_servicios_medicos = dplyr::if_else(p44_2 == 1, "Sí", "No"),
+      usos_internet_buscar_info_servicios_medicos = forcats::as_factor(usos_internet_buscar_info_servicios_medicos),
+      usos_internet_buscar_info_salud = dplyr::if_else(p44_3 == 1, "Sí", "No"),
+      usos_internet_buscar_info_salud = forcats::as_factor(usos_internet_buscar_info_salud),
+      usos_internet_buscar_info_estado = dplyr::if_else(p44_4 == 1, "Sí", "No"),
+      usos_internet_buscar_info_estado = forcats::as_factor(usos_internet_buscar_info_estado),
+      usos_internet_buscar_info_wikis = dplyr::if_else(p44_5 == 1, "Sí", "No"),
+      usos_internet_buscar_info_wikis = forcats::as_factor(usos_internet_buscar_info_wikis),
+
+      ## Usos Internet - Estudio
+      usos_internet_estudio_informacion = dplyr::if_else(p45_1 == 1, "Sí", "No"),
+      usos_internet_estudio_informacion = forcats::as_factor(usos_internet_estudio_informacion),
+      usos_internet_estudio_curso_a_distancia = dplyr::if_else(p45_2 == 1, "Sí", "No"),
+      usos_internet_estudio_curso_a_distancia = forcats::as_factor(usos_internet_estudio_curso_a_distancia),
+      usos_internet_estudio_interactuar_centro_de_estudio = dplyr::if_else(p45_3 == 1, "Sí", "No"),
+      usos_internet_estudio_interactuar_centro_de_estudio = forcats::as_factor(usos_internet_estudio_interactuar_centro_de_estudio),
+      usos_internet_estudio_material_docente = dplyr::if_else(p45_4 == 1, "Sí", "No"),
+      usos_internet_estudio_material_docente = forcats::as_factor(usos_internet_estudio_material_docente),
+
+      ## Usos Internet - Trabajo
+      usos_internet_trabajo_informacion = dplyr::if_else(p46_1 == 1, "Sí", "No"),
+      usos_internet_trabajo_informacion = forcats::as_factor(usos_internet_trabajo_informacion),
+      usos_internet_trabajo_buscar_trabajo = dplyr::if_else(p46_2 == 1, "Sí", "No"),
+      usos_internet_trabajo_buscar_trabajo = forcats::as_factor(usos_internet_trabajo_buscar_trabajo),
+      usos_internet_trabajo_wfh = dplyr::if_else(p46_3 == 1, "Sí", "No"),
+      usos_internet_trabajo_wfh = forcats::as_factor(usos_internet_trabajo_wfh),
+      usos_internet_trabajo_email_laboral = dplyr::if_else(p46_4 == 1, "Sí", "No"),
+      usos_internet_trabajo_email_laboral = forcats::as_factor(usos_internet_trabajo_email_laboral),
+
+      ## Usos Internet - Comms
+      usos_internet_comms_email_personal = dplyr::if_else(p47_1_1 == 1, "Sí", "No"),
+      usos_internet_comms_email_personal = forcats::as_factor(usos_internet_comms_email_personal),
+      usos_internet_comms_redes_sociales = dplyr::if_else(p47_1_2 == 1, "Sí", "No"),
+      usos_internet_comms_redes_sociales = forcats::as_factor(usos_internet_comms_redes_sociales),
+      usos_internet_comms_chat = dplyr::if_else(p47_1_3 == 1, "Sí", "No"),
+      usos_internet_comms_chat = forcats::as_factor(usos_internet_comms_chat),
+      usos_internet_comms_llamadas = dplyr::if_else(p47_1_4 == 1, "Sí", "No"),
+      usos_internet_comms_llamadas = forcats::as_factor(usos_internet_comms_llamadas),
+      usos_internet_comms_date_app = dplyr::if_else(p47_1_5 == 1, "Sí", "No"),
+      usos_internet_comms_date_app = forcats::as_factor(usos_internet_comms_date_app),
+
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
