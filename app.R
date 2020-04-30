@@ -393,19 +393,19 @@ ui <- shiny::tagList(
                outputId = "internet_plot_uno"
             ),
 
-            # shiny::div(
-            #    class = 'questionDiv',
-            #    shiny::h4(
-            #       shiny::textOutput(
-            #          outputId = "internet_texto_pregunta_dos"
-            #       )
-            #    )
-            # ),
-            #
-            # plotly::plotlyOutput(
-            #    outputId = "internet_plot_dos"
-            # ),
-            #
+            shiny::div(
+               class = 'questionDiv',
+               shiny::h4(
+                  shiny::textOutput(
+                     outputId = "internet_texto_pregunta_dos"
+                  )
+               )
+            ),
+
+            plotly::plotlyOutput(
+               outputId = "internet_plot_dos"
+            ),
+
             # shiny::div(
             #    class = 'questionDiv',
             #    shiny::h4(
@@ -1482,65 +1482,69 @@ server <- function(input, output) {
 
    })
 
-   # output$personas_texto_pregunta_dos <- shiny::renderText({
-   #
-   #    texto_pregunta <- dplyr::case_when(
-   #
-   #       input$personas == "uso_celular" ~ "¿Con qué frecuencia utilizó Internet en el celular en los últimos 3 meses? (para quienes lo utilizaron)",
-   #       input$personas == "uso_internet" ~ "¿Con qué frecuencia utilizó Internet en los últimos 3 meses? (para quienes lo utilizaron)"
-   #
-   #    )
-   #
-   #    base::paste("Pregunta:", texto_pregunta)
-   #
-   # })
-   #
-   # output$personas_plot_dos <- plotly::renderPlotly({
-   #
-   #    if (input$personas == "uso_celular") {
-   #
-   #       eutic %>%
-   #          dplyr::filter(
-   #             uso_internet == "Sí"
-   #          ) %>%
-   #          base::droplevels() %>%
-   #          dplyr::filter(
-   #             localidad %in% input$localidad_personas,
-   #             ingresos_total %in% input$ingresos_personas,
-   #             dplyr::between(edad, input$edad_personas[1], input$edad_personas[2]),
-   #             sexo %in% input$sexo_personas,
-   #             nivel_educ %in% input$nivel_educ_personas
-   #          ) %>%
-   #          plotly_personas_uso_tic(
-   #             group_var_1 = input$personas_graficar_segun,
-   #             group_var_2 = "frecuencia_uso_internet_celular",
-   #             plotly_legend_y = -0.50
-   #          )
-   #
-   #    } else if (input$personas == "uso_internet") {
-   #
-   #       eutic %>%
-   #          dplyr::filter(
-   #             uso_internet == "Sí"
-   #          ) %>%
-   #          base::droplevels() %>%
-   #          dplyr::filter(
-   #             localidad %in% input$localidad_personas,
-   #             ingresos_total %in% input$ingresos_personas,
-   #             dplyr::between(edad, input$edad_personas[1], input$edad_personas[2]),
-   #             sexo %in% input$sexo_personas,
-   #             nivel_educ %in% input$nivel_educ_personas
-   #          ) %>%
-   #          plotly_personas_uso_tic(
-   #             group_var_1 = input$personas_graficar_segun,
-   #             group_var_2 = "frecuencia_uso_internet",
-   #             plotly_legend_y = -0.50
-   #          )
-   #
-   #    }
-   #
-   # })
-   #
+   output$internet_texto_pregunta_dos <- shiny::renderText({
+
+      texto_pregunta <- dplyr::case_when(
+
+         input$internet == "_buscar_info_" ~ " ",
+         input$internet == "_estudio_" ~ " ",
+         input$internet == "_trabajo_" ~ "En caso de no poder acceder a Internet en una jornada laboral típica, ¿podría usted desempeñar sus tareas con normalidad? (para quienes sí lo utilizan)",
+         input$internet == "_comms_" ~ "¿Con qué frecuencia participa o chequea alguna red social en Internet? (para quienes las utilizan)",
+         input$internet == "_ocio_" ~ " ",
+         input$internet == "_comercio_" ~ " "
+
+      )
+
+      base::paste("Pregunta:", texto_pregunta)
+
+   })
+
+   output$internet_plot_dos <- plotly::renderPlotly({
+
+      if (input$internet == "_trabajo_") {
+
+         eutic %>%
+            dplyr::filter(
+               usos_internet_laboral == "Sí"
+            ) %>%
+            base::droplevels() %>%
+            dplyr::filter(
+               localidad %in% input$localidad_internet,
+               ingresos_total %in% input$ingresos_internet,
+               dplyr::between(edad, input$edad_internet[1], input$edad_internet[2]),
+               sexo %in% input$sexo_internet,
+               nivel_educ %in% input$nivel_educ_internet
+            ) %>%
+            plotly_personas_uso_tic(
+               group_var_1 = input$internet_graficar_segun,
+               group_var_2 = "usos_internet_laboral_dificultad",
+               plotly_legend_y = -0.40
+            )
+
+      } else if (input$internet == "_comms_") {
+
+         eutic %>%
+            dplyr::filter(
+               usos_internet_comms_redes_sociales == "Sí"
+            ) %>%
+            base::droplevels() %>%
+            dplyr::filter(
+               localidad %in% input$localidad_internet,
+               ingresos_total %in% input$ingresos_internet,
+               dplyr::between(edad, input$edad_internet[1], input$edad_internet[2]),
+               sexo %in% input$sexo_internet,
+               nivel_educ %in% input$nivel_educ_internet
+            ) %>%
+            plotly_personas_uso_tic(
+               group_var_1 = input$internet_graficar_segun,
+               group_var_2 = "frecuencia_uso_redes_sociales",
+               plotly_legend_y = -0.40
+            )
+
+      }
+
+   })
+
    # output$personas_texto_pregunta_tres <- shiny::renderText({
    #
    #    texto_pregunta <- dplyr::case_when(
