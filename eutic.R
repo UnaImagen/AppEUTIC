@@ -229,6 +229,36 @@ eutic %<>%
       usos_internet_comms_date_app = dplyr::if_else(p47_1_5 == 1, "Sí", "No"),
       usos_internet_comms_date_app = forcats::as_factor(usos_internet_comms_date_app),
 
+      ## Usos Internet - Ocio
+      usos_internet_ocio_radio = dplyr::if_else(p48_1 == 1, "Sí", "No"),
+      usos_internet_ocio_radio = forcats::as_factor(usos_internet_ocio_radio),
+      usos_internet_ocio_tv = dplyr::if_else(p48_2 == 1, "Sí", "No"),
+      usos_internet_ocio_tv = forcats::as_factor(usos_internet_ocio_tv),
+      usos_internet_ocio_streaming = dplyr::if_else(p48_3 == 1, "Sí", "No"),
+      usos_internet_ocio_streaming = forcats::as_factor(usos_internet_ocio_streaming),
+      usos_internet_ocio_gaming = dplyr::if_else(p48_4 == 1, "Sí", "No"),
+      usos_internet_ocio_gaming = forcats::as_factor(usos_internet_ocio_gaming),
+      usos_internet_ocio_software = dplyr::if_else(p48_5 == 1, "Sí", "No"),
+      usos_internet_ocio_software = forcats::as_factor(usos_internet_ocio_software),
+      usos_internet_ocio_leer = dplyr::if_else(p48_6 == 1, "Sí", "No"),
+      usos_internet_ocio_leer = forcats::as_factor(usos_internet_ocio_leer),
+      usos_internet_ocio_blogging = dplyr::if_else(p48_7 == 1, "Sí", "No"),
+      usos_internet_ocio_blogging = forcats::as_factor(usos_internet_ocio_blogging),
+      usos_internet_ocio_web = dplyr::if_else(p48_8 == 1, "Sí", "No"),
+      usos_internet_ocio_web = forcats::as_factor(usos_internet_ocio_web),
+      usos_internet_ocio_storage = dplyr::if_else(p48_9 == 1, "Sí", "No"),
+      usos_internet_ocio_storage = forcats::as_factor(usos_internet_ocio_storage),
+
+      ## Usos Internet - Comercio
+      usos_internet_comercio_compra = dplyr::if_else(p49_1 == 1 | p49_2 == 1, "Sí", "No"),
+      usos_internet_comercio_compra = forcats::as_factor(usos_internet_comercio_compra),
+      usos_internet_comercio_venta = dplyr::if_else(p49_3 == 1, "Sí", "No"),
+      usos_internet_comercio_venta = forcats::as_factor(usos_internet_comercio_venta),
+      usos_internet_comercio_banking = dplyr::if_else(p49_4 == 1 | p49_5 == 1, "Sí", "No"),
+      usos_internet_comercio_banking = forcats::as_factor(usos_internet_comercio_banking),
+      usos_internet_comercio_booking = dplyr::if_else(p49_6 == 1, "Sí", "No"),
+      usos_internet_comercio_booking = forcats::as_factor(usos_internet_comercio_booking),
+
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
