@@ -259,6 +259,61 @@ eutic %<>%
       usos_internet_comercio_booking = dplyr::if_else(p49_6 == 1, "Sí", "No"),
       usos_internet_comercio_booking = forcats::as_factor(usos_internet_comercio_booking),
 
+      ## Uso Internet - Dificultad para trabajar sin el
+      usos_internet_laboral_dificultad = dplyr::case_when(
+         p43_1_2 == 1 & p43_2 == 1 ~ "Sí",
+         p43_1_2 == 1 & p43_2 == 2 ~ "Con cierta dificultad",
+         p43_1_2 == 1 & p43_2 == 3 ~ "Con bastante dificultad",
+         p43_1_2 == 1 & p43_2 == 4 ~ "No",
+         TRUE ~ "No aplica"
+      ),
+      usos_internet_laboral_dificultad = forcats::as_factor(usos_internet_laboral_dificultad),
+      usos_internet_laboral_dificultad = forcats::fct_relevel(
+         .f = usos_internet_laboral_dificultad,
+         "Sí",
+         "Con cierta dificultad",
+         "Con bastante dificultad",
+         "No",
+         "No aplica"
+      ),
+
+      ## Usos Internet - Redes Sociales
+      frecuencia_uso_redes_sociales = forcats::as_factor(p47_2),
+      frecuencia_uso_redes_sociales = forcats::fct_recode(
+         .f = frecuencia_uso_redes_sociales,
+         "Entre una y tres veces al día" = "Diariamente,de una a tres  veces al dia",
+         "Cuatro o más veces al día" = "Diariamente,cuatro o mas veces en el dia",
+         "Al menos una vez a la semana" = "Al menos una vez a la semana pero no todos los días",
+         "Al menos una vez al mes" = "Al menos una vez a la semana pero no todos las semanas",
+         "Menos de una vez al mes" = "Menos de  una vez al mes",
+         "No recuerda" = "No recuerda o muy irregularmente (no leer)",
+         "No utiliza" = "0"
+      ),
+      frecuencia_uso_redes_sociales = forcats::fct_relevel(
+         .f = frecuencia_uso_redes_sociales,
+         "Cuatro o más veces al día",
+         "Entre una y tres veces al día",
+         "Al menos una vez a la semana",
+         "Al menos una vez al mes",
+         "Menos de una vez al mes",
+         "No utiliza",
+         "No recuerda"
+      ),
+
+      ## Usos Internet - Canales
+      usos_internet_youtube = dplyr::if_else(p48b_1 == 1, "Sï", "No"),
+      usos_internet_youtube = forcats::as_factor(usos_internet_youtube),
+      usos_internet_netflix = dplyr::if_else(p48b_2 == 1, "Sï", "No"),
+      usos_internet_netflix = forcats::as_factor(usos_internet_netflix),
+      usos_internet_veratv = dplyr::if_else(p48b_3 == 1, "Sï", "No"),
+      usos_internet_veratv = forcats::as_factor(usos_internet_veratv),
+      usos_internet_aire = dplyr::if_else(p48b_4 == 1, "Sï", "No"),
+      usos_internet_aire = forcats::as_factor(usos_internet_aire),
+      usos_internet_cable = dplyr::if_else(p48b_5 == 1, "Sï", "No"),
+      usos_internet_cable = forcats::as_factor(usos_internet_cable),
+      usos_internet_otro = dplyr::if_else(p48b_6 == 1, "Sï", "No"),
+      usos_internet_otro = forcats::as_factor(usos_internet_otro)
+
    )
 
 readr::write_rds(x = eutic, path = "eutic.rds")
