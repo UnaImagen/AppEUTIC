@@ -393,31 +393,40 @@ ui <- shiny::tagList(
                outputId = "internet_plot_uno"
             ),
 
+            shiny::conditionalPanel(
+               condition = "input.internet != '_buscar_info_' & input.internet != '_estudio_'",
 
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "internet_texto_pregunta_dos"
+               shiny::div(
+                  class = 'questionDiv',
+                  shiny::h4(
+                     shiny::textOutput(
+                        outputId = "internet_texto_pregunta_dos"
+                     )
                   )
+               ),
+
+               plotly::plotlyOutput(
+                  outputId = "internet_plot_dos"
                )
+
             ),
 
-            plotly::plotlyOutput(
-               outputId = "internet_plot_dos"
-            ),
+            shiny::conditionalPanel(
+               condition = "input.internet == '_comms_'",
 
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "internet_texto_pregunta_tres"
+               shiny::div(
+                  class = 'questionDiv',
+                  shiny::h4(
+                     shiny::textOutput(
+                        outputId = "internet_texto_pregunta_tres"
+                     )
                   )
-               )
-            ),
+               ),
 
-            plotly::plotlyOutput(
-               outputId = "internet_plot_tres"
+               plotly::plotlyOutput(
+                  outputId = "internet_plot_tres"
+               )
+
             )
 
          )
