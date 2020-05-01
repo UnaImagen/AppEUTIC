@@ -1299,6 +1299,7 @@ server <- function(input, output) {
 
    # Tab: Personas -----------------------------------------------------------
 
+   ## Pregunta uno
    output$personas_texto_pregunta_uno <- shiny::renderText({
 
       texto_pregunta <- dplyr::case_when(
@@ -1348,6 +1349,7 @@ server <- function(input, output) {
 
    })
 
+   ## Pregunta dos
    output$personas_texto_pregunta_dos <- shiny::renderText({
 
       texto_pregunta <- dplyr::case_when(
@@ -1405,12 +1407,13 @@ server <- function(input, output) {
 
    })
 
+   ## Pregunta tres
    output$personas_texto_pregunta_tres <- shiny::renderText({
 
       texto_pregunta <- dplyr::case_when(
 
-         input$personas == "uso_celular" ~ "En los últimos 3 meses, ¿qué actividades realizó con el celular? (para quienes lo utilizaron",
-         input$personas == "uso_internet" ~ "En los últimos 3 meses, ¿con qué finalidades utilizó Internet? (para quienes lo utilizaron"
+         input$personas == "uso_celular" ~ "En los últimos 3 meses, ¿qué actividades realizó con el celular? (para quienes lo utilizaron)",
+         input$personas == "uso_internet" ~ "En los últimos 3 meses, ¿con qué finalidades utilizó Internet? (para quienes lo utilizaron)"
 
       )
 
