@@ -1192,6 +1192,12 @@ server <- function(input, output) {
                tipo_uso == "venta" ~ "Ventas online",
                tipo_uso == "banking" ~ "Banca online",
                tipo_uso == "booking" ~ "Reservas online",
+               tipo_uso == "youtube" ~ "YouTube",
+               tipo_uso == "netflix" ~ "Netflix",
+               tipo_uso == "veratv" ~ "VeraTV",
+               tipo_uso == "aire" ~ "Canales de aire",
+               tipo_uso == "cable" ~ "Canales de cable",
+               tipo_uso == "otro" ~ "Otros",
                TRUE ~ tipo_uso
             ),
             tipo_uso = forcats::as_factor(tipo_uso)
@@ -1490,7 +1496,7 @@ server <- function(input, output) {
          input$internet == "_estudio_" ~ " ",
          input$internet == "_trabajo_" ~ "En caso de no poder acceder a Internet en una jornada laboral típica, ¿podría usted desempeñar sus tareas con normalidad? (para quienes sí lo utilizan)",
          input$internet == "_comms_" ~ "¿Con qué frecuencia participa o chequea alguna red social en Internet? (para quienes las utilizan)",
-         input$internet == "_ocio_" ~ " ",
+         input$internet == "_ocio_" ~ "¿En el último mes vio las siguientes señales a través de Internet?",
          input$internet == "_comercio_" ~ " "
 
       )
@@ -1539,6 +1545,25 @@ server <- function(input, output) {
                group_var_1 = input$internet_graficar_segun,
                group_var_2 = "frecuencia_uso_redes_sociales",
                plotly_legend_y = -0.40
+            )
+
+      } else if (input$internet == "_ocio_") {
+
+         eutic %>%
+            dplyr::filter(
+               localidad %in% input$localidad_internet,
+               ingresos_total %in% input$ingresos_internet,
+               dplyr::between(edad, input$edad_internet[1], input$edad_internet[2]),
+               sexo %in% input$sexo_internet,
+               nivel_educ %in% input$nivel_educ_internet
+            ) %>%
+            generar_data_usos_internet_por_tipo_de_uso(
+               group_by_var = input$internet_graficar_segun,
+               var_pattern = "_canales_"
+            ) %>%
+            plotly_personas_usos_tics(
+               group_by_var = input$internet_graficar_segun,
+               plotly_legend_y = -0.35
             )
 
       }

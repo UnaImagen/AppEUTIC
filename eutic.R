@@ -301,18 +301,18 @@ eutic %<>%
       ),
 
       ## Usos Internet - Canales
-      usos_internet_youtube = dplyr::if_else(p48b_1 == 1, "Sï", "No"),
-      usos_internet_youtube = forcats::as_factor(usos_internet_youtube),
-      usos_internet_netflix = dplyr::if_else(p48b_2 == 1, "Sï", "No"),
-      usos_internet_netflix = forcats::as_factor(usos_internet_netflix),
-      usos_internet_veratv = dplyr::if_else(p48b_3 == 1, "Sï", "No"),
-      usos_internet_veratv = forcats::as_factor(usos_internet_veratv),
-      usos_internet_aire = dplyr::if_else(p48b_4 == 1, "Sï", "No"),
-      usos_internet_aire = forcats::as_factor(usos_internet_aire),
-      usos_internet_cable = dplyr::if_else(p48b_5 == 1, "Sï", "No"),
-      usos_internet_cable = forcats::as_factor(usos_internet_cable),
-      usos_internet_otro = dplyr::if_else(p48b_6 == 1, "Sï", "No"),
-      usos_internet_otro = forcats::as_factor(usos_internet_otro)
+      usos_internet_canales_youtube = dplyr::if_else(p48b_1 == 1, "Sí", "No"),
+      usos_internet_canales_youtube = forcats::as_factor(usos_internet_canales_youtube),
+      usos_internet_canales_netflix = dplyr::if_else(p48b_2 == 1, "Sí", "No"),
+      usos_internet_canales_netflix = forcats::as_factor(usos_internet_canales_netflix),
+      usos_internet_canales_veratv = dplyr::if_else(p48b_3 == 1, "Sí", "No"),
+      usos_internet_canales_veratv = forcats::as_factor(usos_internet_canales_veratv),
+      usos_internet_canales_aire = dplyr::if_else(p48b_4 == 1, "Sí", "No"),
+      usos_internet_canales_aire = forcats::as_factor(usos_internet_canales_aire),
+      usos_internet_canales_cable = dplyr::if_else(p48b_5 == 1, "Sí", "No"),
+      usos_internet_canales_cable = forcats::as_factor(usos_internet_canales_cable),
+      usos_internet_canales_otro = dplyr::if_else(p48b_6 == 1, "Sí", "No"),
+      usos_internet_canales_otro = forcats::as_factor(usos_internet_canales_otro)
 
    )
 
