@@ -220,8 +220,8 @@ eutic %<>%
       ## Usos Internet - Comms
       usos_internet_comms_email_personal = dplyr::if_else(p47_1_1 == 1, "Sí", "No"),
       usos_internet_comms_email_personal = forcats::as_factor(usos_internet_comms_email_personal),
-      usos_internet_comms_redes_sociales = dplyr::if_else(p47_1_2 == 1, "Sí", "No"),
-      usos_internet_comms_redes_sociales = forcats::as_factor(usos_internet_comms_redes_sociales),
+      usos_internet_comms_redes = dplyr::if_else(p47_1_2 == 1, "Sí", "No"),
+      usos_internet_comms_redes = forcats::as_factor(usos_internet_comms_redes),
       usos_internet_comms_chat = dplyr::if_else(p47_1_3 == 1, "Sí", "No"),
       usos_internet_comms_chat = forcats::as_factor(usos_internet_comms_chat),
       usos_internet_comms_llamadas = dplyr::if_else(p47_1_4 == 1, "Sí", "No"),
@@ -277,7 +277,21 @@ eutic %<>%
          "No aplica"
       ),
 
-      ## Usos Internet - Redes Sociales
+      ## Usos Internet - Uso de redes sociales
+      usos_internet_redes_facebook = dplyr::if_else(p47_2_1_1 == 1, "Sí", "No"),
+      usos_internet_redes_facebook = forcats::as_factor(usos_internet_redes_facebook),
+      usos_internet_redes_twitter = dplyr::if_else(p47_2_1_2 == 1, "Sí", "No"),
+      usos_internet_redes_twitter = forcats::as_factor(usos_internet_redes_twitter),
+      usos_internet_redes_google = dplyr::if_else(p47_2_1_3 == 1, "Sí", "No"),
+      usos_internet_redes_google = forcats::as_factor(usos_internet_redes_google),
+      usos_internet_redes_instagram = dplyr::if_else(p47_2_1_4 == 1, "Sí", "No"),
+      usos_internet_redes_instagram = forcats::as_factor(usos_internet_redes_instagram),
+      usos_internet_redes_linkedin = dplyr::if_else(p47_2_1_6 == 1, "Sí", "No"),
+      usos_internet_redes_linkedin = forcats::as_factor(usos_internet_redes_linkedin),
+      usos_internet_redes_otras = dplyr::if_else(p47_2_1_5 == 1 | p47_2_1_7 == 1, "Sí", "No"),
+      usos_internet_redes_otras = forcats::as_factor(usos_internet_redes_otras),
+
+      ## Usos Internet - Frecuencia uso de redes sociales
       frecuencia_uso_redes_sociales = forcats::as_factor(p47_2),
       frecuencia_uso_redes_sociales = forcats::fct_recode(
          .f = frecuencia_uso_redes_sociales,
@@ -312,7 +326,23 @@ eutic %<>%
       usos_internet_canales_cable = dplyr::if_else(p48b_5 == 1, "Sí", "No"),
       usos_internet_canales_cable = forcats::as_factor(usos_internet_canales_cable),
       usos_internet_canales_otro = dplyr::if_else(p48b_6 == 1, "Sí", "No"),
-      usos_internet_canales_otro = forcats::as_factor(usos_internet_canales_otro)
+      usos_internet_canales_otro = forcats::as_factor(usos_internet_canales_otro),
+
+      ## Medios de pago electrónicos
+      usos_internet_medios_tarjeta_internacional = dplyr::if_else(p54b_1 == 1, "Sí", "No"),
+      usos_internet_medios_tarjeta_internacional = forcats::as_factor(usos_internet_medios_tarjeta_internacional),
+      usos_internet_medios_tarjeta_nacional = dplyr::if_else(p54b_2 == 1, "Sí", "No"),
+      usos_internet_medios_tarjeta_nacional = forcats::as_factor(usos_internet_medios_tarjeta_nacional),
+      usos_internet_medios_tarjeta_prepaga = dplyr::if_else(p54b_3 == 1, "Sí", "No"),
+      usos_internet_medios_tarjeta_prepaga = forcats::as_factor(usos_internet_medios_tarjeta_prepaga),
+      usos_internet_medios_tarjeta_debito = dplyr::if_else(p54b_4 == 1, "Sí", "No"),
+      usos_internet_medios_tarjeta_debito = forcats::as_factor(usos_internet_medios_tarjeta_debito),
+      usos_internet_medios_paypal = dplyr::if_else(p54b_5 == 1, "Sí", "No"),
+      usos_internet_medios_paypal = forcats::as_factor(usos_internet_medios_paypal),
+      usos_internet_medios_antel = dplyr::if_else(p54b_6 == 1, "Sí", "No"),
+      usos_internet_medios_antel = forcats::as_factor(usos_internet_medios_antel),
+      usos_internet_medios_otros = dplyr::if_else(p54b_7 == 1, "Sí", "No"),
+      usos_internet_medios_otros = forcats::as_factor(usos_internet_medios_otros)
 
    )
 
