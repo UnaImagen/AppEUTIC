@@ -7,6 +7,10 @@ library(magrittr, quietly = TRUE)
 
 eutic <- readr::read_rds(path = "eutic.rds")
 
+title <- "Encuesta de Usos de las Tecnologías de la Información y Comunicación (2016)"
+
+data_source <- "Fuente: INE y AGESIC"
+
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
 
@@ -30,7 +34,7 @@ ui <- shiny::tagList(
 
          shiny::sidebarPanel(
 
-            shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
+            shiny::h4(title),
 
             shiny::radioButtons(
                inputId = "hogares",
@@ -82,7 +86,7 @@ ui <- shiny::tagList(
                multiple = TRUE
             ),
 
-            shiny::p("Fuente: Instituto Nacional de Estadística"),
+            shiny::p(data_source),
 
             shiny::p(
                "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
@@ -133,7 +137,7 @@ ui <- shiny::tagList(
 
          shiny::sidebarPanel(
 
-            shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
+            shiny::h4(title),
 
             shiny::radioButtons(
                inputId = "personas",
@@ -215,7 +219,7 @@ ui <- shiny::tagList(
                multiple = TRUE
             ),
 
-            shiny::p("Fuente: Instituto Nacional de Estadística"),
+            shiny::p(data_source),
 
             shiny::p(
                "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
@@ -279,7 +283,7 @@ ui <- shiny::tagList(
 
          shiny::sidebarPanel(
 
-            shiny::h4("Encuesta de Usos de las Tecnologías de la Información y Comunicación"),
+            shiny::h4(title),
 
             shiny::radioButtons(
                inputId = "internet",
@@ -369,7 +373,7 @@ ui <- shiny::tagList(
                multiple = TRUE
             ),
 
-            shiny::p("Fuente: Instituto Nacional de Estadística"),
+            shiny::p(data_source),
 
             shiny::p(
                "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
