@@ -11,6 +11,18 @@ title <- "Encuesta de Usos de las Tecnologías de la Información y Comunicació
 
 data_source <- "Fuente: INE y AGESIC"
 
+nota_quintiles <- base::c(
+   "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son los hogares de
+   menores ingresos del país."
+)
+
+links <- shiny::HTML(
+   '<a href="https://github.com/daczarne/AppEUTIC"><i class="fab fa-github"></i></a>&nbsp;
+   <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
+   <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
+   <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
+)
+
 source(
    file = "www/funciones_app.R",
    encoding = "UTF-8"
@@ -35,7 +47,7 @@ ui <- shiny::tagList(
 
          icon = shiny::icon("home"),
 
-         title = " Hogares",
+         title = "Hogares",
 
          shiny::sidebarPanel(
 
@@ -93,10 +105,11 @@ ui <- shiny::tagList(
 
             shiny::p(data_source),
 
-            shiny::p(
-               "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
-               los hogares de menores ingresos del país."
-            )
+            shiny::p(nota_quintiles),
+
+            shiny::p(links),
+
+            shiny::icon(" ")
 
          ),
 
@@ -226,10 +239,9 @@ ui <- shiny::tagList(
 
             shiny::p(data_source),
 
-            shiny::p(
-               "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
-               los hogares de menores ingresos del país."
-            )
+            shiny::p(nota_quintiles),
+
+            shiny::p(links)
 
          ),
 
@@ -380,10 +392,9 @@ ui <- shiny::tagList(
 
             shiny::p(data_source),
 
-            shiny::p(
-               "Nota: el nivel de ingresos se presenta por quintil (grupos de a 20%), donde Q5 son los hogares de mayores ingresos, y Q1 son
-               los hogares de menores ingresos del país."
-            )
+            shiny::p(nota_quintiles),
+
+            shiny::p(links)
 
          ),
 
@@ -717,45 +728,22 @@ server <- function(input, output) {
 
    output$internet_plot_uno <- plotly::renderPlotly({
 
-      if (input$internet == "_ocio_") {
-
-         eutic %>%
-            dplyr::filter(
-               localidad %in% input$localidad_internet,
-               ingresos_total %in% input$ingresos_internet,
-               dplyr::between(edad, input$edad_internet[1], input$edad_internet[2]),
-               sexo %in% input$sexo_internet,
-               nivel_educ %in% input$nivel_educ_internet
-            ) %>%
-            generar_data_usos_internet_por_tipo_de_uso(
-               group_by_var = input$internet_graficar_segun,
-               var_pattern = input$internet,
-               var_names = base::names(eutic)
-            ) %>%
-            plotly_personas_usos_tics(
-               group_by_var = input$internet_graficar_segun
-            )
-
-      } else {
-
-         eutic %>%
-            dplyr::filter(
-               localidad %in% input$localidad_internet,
-               ingresos_total %in% input$ingresos_internet,
-               dplyr::between(edad, input$edad_internet[1], input$edad_internet[2]),
-               sexo %in% input$sexo_internet,
-               nivel_educ %in% input$nivel_educ_internet
-            ) %>%
-            generar_data_usos_internet_por_tipo_de_uso(
-               group_by_var = input$internet_graficar_segun,
-               var_pattern = input$internet,
-               var_names = base::names(eutic)
-            ) %>%
-            plotly_personas_usos_tics(
-               group_by_var = input$internet_graficar_segun
-            )
-
-      }
+      eutic %>%
+         dplyr::filter(
+            localidad %in% input$localidad_internet,
+            ingresos_total %in% input$ingresos_internet,
+            dplyr::between(edad, input$edad_internet[1], input$edad_internet[2]),
+            sexo %in% input$sexo_internet,
+            nivel_educ %in% input$nivel_educ_internet
+         ) %>%
+         generar_data_usos_internet_por_tipo_de_uso(
+            group_by_var = input$internet_graficar_segun,
+            var_pattern = input$internet,
+            var_names = base::names(eutic)
+         ) %>%
+         plotly_personas_usos_tics(
+            group_by_var = input$internet_graficar_segun
+         )
 
    })
 
