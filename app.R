@@ -17,10 +17,12 @@ nota_quintiles <- base::c(
 )
 
 links <- shiny::HTML(
-   '<a href="https://github.com/daczarne/AppEUTIC"><i class="fab fa-github"></i></a>&nbsp;
+   '<a href="https://danielczarnievicz.netlify.app/portfolio/tecnolog%C3%ADas-de-la-informaci%C3%B3n/"><i class="fas fa-arrow-circle-left"></i></a>&nbsp;
+   <a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
    <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
    <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
-   <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
+   <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;
+   <a href="https://danielczarnievicz.netlify.app/portfolio/"><i class="fas fa-home"></i></a>&nbsp;'
 )
 
 source(
