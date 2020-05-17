@@ -57,7 +57,22 @@ plotly_hogares_tienen <- function(.data, group_var_1, group_var_2) {
       ) %>%
       plotly::config(
          locale = "es",
-         displayModeBar = TRUE
+         displayModeBar = TRUE,
+         displaylogo = TRUE,
+         modeBarButtonsToRemove = base::c(
+            "zoom2d",
+            "zoomIn2d",
+            "zoomOut2d",
+            "select2d",
+            "drawclosedpath",
+            "lasso2d",
+            "pan2d",
+            "drawrect",
+            "autoScale2d",
+            "hoverClosestCartesian",
+            "hoverCompareCartesian",
+            "toggleSpikelines"
+         )
       )
 
 }
@@ -126,7 +141,22 @@ plotly_hogares_cantidad_dispositivos <- function(.data, group_var_1, group_var_2
       ) %>%
       plotly::config(
          locale = "es",
-         displayModeBar = TRUE
+         displayModeBar = TRUE,
+         displaylogo = TRUE,
+         modeBarButtonsToRemove = base::c(
+            "zoom2d",
+            "zoomIn2d",
+            "zoomOut2d",
+            "select2d",
+            "drawclosedpath",
+            "lasso2d",
+            "pan2d",
+            "drawrect",
+            "autoScale2d",
+            "hoverClosestCartesian",
+            "hoverCompareCartesian",
+            "toggleSpikelines"
+         )
       )
 
 }
@@ -263,7 +293,22 @@ plotly_tipo_conexion <- function(.data, group_by_var) {
       ) %>%
       plotly::config(
          locale = "es",
-         displayModeBar = TRUE
+         displayModeBar = TRUE,
+         displaylogo = TRUE,
+         modeBarButtonsToRemove = base::c(
+            "zoom2d",
+            "zoomIn2d",
+            "zoomOut2d",
+            "select2d",
+            "drawclosedpath",
+            "lasso2d",
+            "pan2d",
+            "drawrect",
+            "autoScale2d",
+            "hoverClosestCartesian",
+            "hoverCompareCartesian",
+            "toggleSpikelines"
+         )
       )
 
 }
@@ -326,7 +371,22 @@ plotly_personas_uso_tic <- function(.data, group_var_1, group_var_2, plotly_lege
       ) %>%
       plotly::config(
          locale = "es",
-         displayModeBar = TRUE
+         displayModeBar = TRUE,
+         displaylogo = TRUE,
+         modeBarButtonsToRemove = base::c(
+            "zoom2d",
+            "zoomIn2d",
+            "zoomOut2d",
+            "select2d",
+            "drawclosedpath",
+            "lasso2d",
+            "pan2d",
+            "drawrect",
+            "autoScale2d",
+            "hoverClosestCartesian",
+            "hoverCompareCartesian",
+            "toggleSpikelines"
+         )
       )
 
 }
@@ -660,7 +720,22 @@ plotly_personas_usos_tics <- function(.data, group_by_var, plotly_legend_y = -0.
       ) %>%
       plotly::config(
          locale = "es",
-         displayModeBar = TRUE
+         displayModeBar = TRUE,
+         displaylogo = TRUE,
+         modeBarButtonsToRemove = base::c(
+            "zoom2d",
+            "zoomIn2d",
+            "zoomOut2d",
+            "select2d",
+            "drawclosedpath",
+            "lasso2d",
+            "pan2d",
+            "drawrect",
+            "autoScale2d",
+            "hoverClosestCartesian",
+            "hoverCompareCartesian",
+            "toggleSpikelines"
+         )
       )
 
 }
