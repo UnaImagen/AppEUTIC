@@ -473,7 +473,7 @@ server <- function(input, output) {
       texto_pregunta <- dplyr::case_when(
 
          input$hogares == "tiene_desktop" ~ "¿Tiene computadora tradicional o de escritorio en el hogar?",
-         input$hogares == "tiene_laptop" ~ "¿Tiene laptop, netbook o similar enn el hogar?",
+         input$hogares == "tiene_laptop" ~ "¿Tiene laptop, netbook o similar en el hogar?",
          input$hogares == "tiene_tablet" ~ "¿Tiene tablet en el hogar?",
          input$hogares == "tiene_internet" ~ "¿Tiene su hogar conexión a Internet?"
 
