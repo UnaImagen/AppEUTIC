@@ -43,14 +43,9 @@ plotly_hogares_tienen <- function(.data, group_var_1, group_var_2) {
             title = "<b>Porcentaje de los hogares</b>",
             tickformat = "%"
          ),
-         legend = base::list(
-            bgcolor = "#E2E2E2",
-            orientation = "h",
-            yanchor = "bottom",
-            xanchor = "left",
-            y = -.30
-         ),
          hovermode = "x"
       ) %>%
+      plotlyLayout() %>%
+      plotlyLegend() %>%
       plotlyConfig()
 }

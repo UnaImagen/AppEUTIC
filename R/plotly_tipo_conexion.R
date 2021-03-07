@@ -26,14 +26,9 @@ plotly_tipo_conexion <- function(.data, group_by_var) {
             title = "<b>Porcentaje de los hogares</b>",
             tickformat = "%"
          ),
-         legend = base::list(
-            bgcolor = "#E2E2E2",
-            orientation = "h",
-            yanchor = "bottom",
-            xanchor = "left",
-            y = -.40
-         ),
          hovermode = "x"
       ) %>%
+      plotlyLayout() %>%
+      plotlyLegend(y = -0.40) %>%
       plotlyConfig()
 }
