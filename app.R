@@ -40,79 +40,36 @@ ui <- shiny::tagList(
 
       shiny::tabPanel(
 
+         # Navbar
          icon = shiny::icon("home"),
-
          title = "Hogares",
 
+         # Side bar
          shiny::sidebarPanel(
-
             shiny::h4(title),
-
-            shiny::radioButtons(
-               inputId = "hogares",
-               label = "Hogares que tengan...",
-               choiceNames = base::list(
-                  shiny::icon("desktop"),
-                  shiny::icon("laptop"),
-                  shiny::icon("tablet"),
-                  shiny::icon("at")
-               ),
-               choiceValues = base::list(
-                  "tiene_desktop",
-                  "tiene_laptop",
-                  "tiene_tablet",
-                  "tiene_internet"
-               ),
-               selected = "tiene_desktop",
-               inline = TRUE
-            ),
-
+            # radio buttons homes
+            infoSelectorHomesUI(),
             # Plot-by selector
             selectPlotByUI(id = "hogares_graficar_segun"),
-
             # Locality selector
             selectLocalityUI(id = "hogares_localidad", levels = base::levels(eutic[["localidad"]])),
-
             # Income level selector
             selectIncomeLevelUI(id = "hogares_ingresos", levels = base::levels(eutic[["ingresos_total"]])),
-
             # Notes
             shiny::p(data_source),
             shiny::p(nota_quintiles),
             shiny::p(links),
-
             shiny::icon(" ")
-
          ),
 
+         # Main panel
          shiny::mainPanel(
-
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "hogares_texto_pregunta_uno"
-                  )
-               )
-            ),
-
-            plotly::plotlyOutput(
-               outputId = "hogares_plot_uno"
-            ),
-
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "hogares_texto_pregunta_dos"
-                  )
-               )
-            ),
-
-            plotly::plotlyOutput(
-               outputId = "hogares_plot_dos"
-            )
-
+            # Section 1
+            questionDivUI(id = "hogares_texto_pregunta_uno"),
+            plotly::plotlyOutput(outputId = "hogares_plot_uno"),
+            # Section 2
+            questionDivUI(id = "hogares_texto_pregunta_dos"),
+            plotly::plotlyOutput(outputId = "hogares_plot_dos")
          )
 
       ),
@@ -121,95 +78,44 @@ ui <- shiny::tagList(
 
       shiny::tabPanel(
 
+         # Navbar
          icon = shiny::icon("user"),
-
          title = "Personas",
 
+         # Side panel
          shiny::sidebarPanel(
-
             shiny::h4(title),
-
-            shiny::radioButtons(
-               inputId = "personas",
-               label = "Personas que usen...",
-               choiceNames = base::list(
-                  shiny::icon("mobile-alt"),
-                  shiny::icon("at")
-               ),
-               choiceValues = base::list(
-                  "uso_celular",
-                  "uso_internet"
-               ),
-               selected = "uso_celular",
-               inline = TRUE
-            ),
-
+            # Info selector
+            infoSelectorPeopleUI(),
             # Plot-by selector
             selectPlotByUI(id = "personas_graficar_segun"),
-
             # Locality selector
             selectLocalityUI(id = "localidad_personas", levels = base::levels(eutic[["localidad"]])),
-
             # Income level selector
             selectIncomeLevelUI(id = "ingresos_personas", levels = base::levels(eutic[["ingresos_total"]])),
-
             # Age selector
             selectAgeUI(id = "edad_personas", var = eutic[["edad"]]),
-
             # Gender selector
             selectGenderUI(id = "sexo_personas",  var = eutic[["sexo"]]),
-
             # Educational level selector
             selectEducLevelUI(id = "nivel_educ_personas", var = eutic[["nivel_educ"]]),
-
             # Notes
             shiny::p(data_source),
             shiny::p(nota_quintiles),
             shiny::p(links)
-
          ),
 
+         # Main panel
          shiny::mainPanel(
-
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "personas_texto_pregunta_uno"
-                  )
-               )
-            ),
-
-            plotly::plotlyOutput(
-               outputId = "personas_plot_uno"
-            ),
-
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "personas_texto_pregunta_dos"
-                  )
-               )
-            ),
-
-            plotly::plotlyOutput(
-               outputId = "personas_plot_dos"
-            ),
-
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "personas_texto_pregunta_tres"
-                  )
-               )
-            ),
-
-            plotly::plotlyOutput(
-               outputId = "personas_plot_tres"
-            )
-
+            # Section 1
+            questionDivUI(id = "personas_texto_pregunta_uno"),
+            plotly::plotlyOutput(outputId = "personas_plot_uno"),
+            # Section 2
+            questionDivUI(id = "personas_texto_pregunta_dos"),
+            plotly::plotlyOutput(outputId = "personas_plot_dos"),
+            # Section 3
+            questionDivUI(id = "personas_texto_pregunta_tres"),
+            plotly::plotlyOutput(outputId = "personas_plot_tres")
          )
 
       ),
@@ -218,55 +124,27 @@ ui <- shiny::tagList(
 
       shiny::tabPanel(
 
+         # Navbar
          icon = shiny::icon("wifi"),
-
          title = "Internet",
 
+         # Side bar
          shiny::sidebarPanel(
-
             shiny::h4(title),
-
-            shiny::radioButtons(
-               inputId = "internet",
-               label = "Personas que usan internet para...",
-               choiceNames = base::list(
-                  shiny::icon("info"),
-                  shiny::icon("book"),
-                  shiny::icon("briefcase"),
-                  shiny::icon("comments"),
-                  shiny::icon("theater-masks"),
-                  shiny::icon("shopping-cart")
-               ),
-               choiceValues = base::list(
-                  "_buscar_info_",
-                  "_estudio_",
-                  "_trabajo_",
-                  "_comms_",
-                  "_ocio_",
-                  "_comercio_"
-               ),
-               selected = "_buscar_info_",
-               inline = TRUE
-            ),
-
+            # Info selector
+            infoSelectorInternetUI(),
             # Plot-by selector
             selectPlotByUI(id = "internet_graficar_segun"),
-
             # Locality selector
             selectLocalityUI(id = "localidad_internet", levels = base::levels(eutic[["localidad"]])),
-
             # Income level selector
             selectIncomeLevelUI(id = "ingresos_internet", levels = base::levels(eutic[["ingresos_total"]])),
-
             # Age selector
             selectAgeUI(id = "edad_internet", var = eutic[["edad"]]),
-
             # Gender selector
             selectGenderUI(id = "sexo_internet",  var = eutic[["sexo"]]),
-
             # Educational level selector
             selectEducLevelUI(id = "nivel_educ_internet", var = eutic[["nivel_educ"]]),
-
             # Notes
             shiny::p(data_source),
             shiny::p(nota_quintiles),
@@ -274,57 +152,23 @@ ui <- shiny::tagList(
 
          ),
 
+         # Main panel
          shiny::mainPanel(
-
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "internet_texto_pregunta_uno"
-                  )
-               )
-            ),
-
-            plotly::plotlyOutput(
-               outputId = "internet_plot_uno"
-            ),
-
+            # Section 1
+            questionDivUI(id = "internet_texto_pregunta_uno"),
+            plotly::plotlyOutput(outputId = "internet_plot_uno"),
+            # Section 2
             shiny::conditionalPanel(
                condition = "input.internet != '_buscar_info_' & input.internet != '_estudio_'",
-
-               shiny::div(
-                  class = 'questionDiv',
-                  shiny::h4(
-                     shiny::textOutput(
-                        outputId = "internet_texto_pregunta_dos"
-                     )
-                  )
-               ),
-
-               plotly::plotlyOutput(
-                  outputId = "internet_plot_dos"
-               )
-
+               questionDivUI(id = "internet_texto_pregunta_dos"),
+               plotly::plotlyOutput(outputId = "internet_plot_dos")
             ),
-
+            # Section 3
             shiny::conditionalPanel(
                condition = "input.internet == '_comms_'",
-
-               shiny::div(
-                  class = 'questionDiv',
-                  shiny::h4(
-                     shiny::textOutput(
-                        outputId = "internet_texto_pregunta_tres"
-                     )
-                  )
-               ),
-
-               plotly::plotlyOutput(
-                  outputId = "internet_plot_tres"
-               )
-
+               questionDivUI(id = "internet_texto_pregunta_tres"),
+               plotly::plotlyOutput(outputId = "internet_plot_tres")
             )
-
          )
 
       )
