@@ -67,20 +67,8 @@ ui <- shiny::tagList(
                inline = TRUE
             ),
 
-            shiny::radioButtons(
-               inputId = "hogares_graficar_segun",
-               label = "Graficar según:",
-               choiceNames = base::list(
-                  shiny::icon("map-marked-alt"),
-                  shiny::icon("dollar-sign")
-               ),
-               choiceValues = base::list(
-                  "localidad",
-                  "ingresos_total"
-               ),
-               selected = "localidad",
-               inline = TRUE
-            ),
+            # Plot-by selector
+            selectPlotByUI(id = "hogares_graficar_segun"),
 
             # Locality selector
             selectLocalityUI(id = "hogares_localidad", levels = base::levels(eutic[["localidad"]])),
@@ -156,25 +144,8 @@ ui <- shiny::tagList(
                inline = TRUE
             ),
 
-            shiny::radioButtons(
-               inputId = "personas_graficar_segun",
-               label = "Graficar según:",
-               choiceNames = base::list(
-                  shiny::icon("map-marked-alt"),
-                  shiny::icon("dollar-sign"),
-                  shiny::icon("venus-mars"),
-                  shiny::icon("graduation-cap")
-
-               ),
-               choiceValues = base::list(
-                  "localidad",
-                  "ingresos_total",
-                  "sexo",
-                  "nivel_educ"
-               ),
-               selected = "localidad",
-               inline = TRUE
-            ),
+            # Plot-by selector
+            selectPlotByUI(id = "personas_graficar_segun"),
 
             # Locality selector
             selectLocalityUI(id = "localidad_personas", levels = base::levels(eutic[["localidad"]])),
@@ -278,25 +249,8 @@ ui <- shiny::tagList(
                inline = TRUE
             ),
 
-            shiny::radioButtons(
-               inputId = "internet_graficar_segun",
-               label = "Graficar según:",
-               choiceNames = base::list(
-                  shiny::icon("map-marked-alt"),
-                  shiny::icon("dollar-sign"),
-                  shiny::icon("venus-mars"),
-                  shiny::icon("graduation-cap")
-
-               ),
-               choiceValues = base::list(
-                  "localidad",
-                  "ingresos_total",
-                  "sexo",
-                  "nivel_educ"
-               ),
-               selected = "localidad",
-               inline = TRUE
-            ),
+            # Plot-by selector
+            selectPlotByUI(id = "internet_graficar_segun"),
 
             # Locality selector
             selectLocalityUI(id = "localidad_internet", levels = base::levels(eutic[["localidad"]])),
