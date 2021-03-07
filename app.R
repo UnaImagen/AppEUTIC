@@ -28,6 +28,10 @@ links <- shiny::HTML(
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
 
+   tags$head(
+      tags$link(rel = "shortcut icon", type = "image/png", href = "favicon.png")
+   ),
+
    shiny::navbarPage(
 
       collapsible = TRUE,
