@@ -10,3 +10,4 @@
 ![top language](https://img.shields.io/github/languages/top/daczarne/AppEUTIC)
 
 App para explorar los resultados de la Encuesta de Uso de TIC en Uruguay.
+
