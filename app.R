@@ -187,18 +187,8 @@ ui <- shiny::tagList(
             # Income level selector
             selectIncomeLevelUI(id = "ingresos_personas", levels = base::levels(eutic[["ingresos_total"]])),
 
-            shiny::sliderInput(
-               inputId = "edad_personas",
-               label = "Edad:",
-               min = base::min(eutic$edad, na.rm = TRUE),
-               max = base::max(eutic$edad, na.rm = TRUE),
-               value = base::c(
-                  base::min(eutic$edad, na.rm = TRUE),
-                  base::max(eutic$edad, na.rm = TRUE)
-               ),
-               step = 1,
-               animate = TRUE
-            ),
+            # Age selector
+            selectAgeUI(id = "edad_personas", var = eutic[["edad"]]),
 
             shiny::selectInput(
                inputId = "sexo_personas",
@@ -330,18 +320,8 @@ ui <- shiny::tagList(
             # Income level selector
             selectIncomeLevelUI(id = "ingresos_internet", levels = base::levels(eutic[["ingresos_total"]])),
 
-            shiny::sliderInput(
-               inputId = "edad_internet",
-               label = "Edad:",
-               min = base::min(eutic$edad, na.rm = TRUE),
-               max = base::max(eutic$edad, na.rm = TRUE),
-               value = base::c(
-                  base::min(eutic$edad, na.rm = TRUE),
-                  base::max(eutic$edad, na.rm = TRUE)
-               ),
-               step = 1,
-               animate = TRUE
-            ),
+            # Age selector
+            selectAgeUI(id = "edad_internet", var = eutic[["edad"]]),
 
             shiny::selectInput(
                inputId = "sexo_internet",
