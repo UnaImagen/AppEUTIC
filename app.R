@@ -25,7 +25,6 @@ links <- shiny::HTML(
    <a href="https://danielczarnievicz.netlify.app/portfolio/"><i class="fas fa-home"></i></a>&nbsp;'
 )
 
-
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
 
@@ -89,13 +88,9 @@ ui <- shiny::tagList(
             # Income level selector
             selectIncomeLevelUI(id = "hogares_ingresos", levels = base::levels(eutic[["ingresos_total"]])),
 
-            # Data source
+            # Notes
             shiny::p(data_source),
-
-            # Note
             shiny::p(nota_quintiles),
-
-            # Links
             shiny::p(links),
 
             shiny::icon(" ")
@@ -193,18 +188,12 @@ ui <- shiny::tagList(
             # Gender selector
             selectGenderUI(id = "sexo_personas",  var = eutic[["sexo"]]),
 
-            shiny::selectInput(
-               inputId = "nivel_educ_personas",
-               label = "Nivel educativo:",
-               choices = base::levels(eutic$nivel_educ),
-               selected = base::levels(eutic$nivel_educ),
-               multiple = TRUE
-            ),
+            # Educational level selector
+            selectEducLevel(id = "nivel_educ_personas", var = eutic[["nivel_educ"]]),
 
+            # Notes
             shiny::p(data_source),
-
             shiny::p(nota_quintiles),
-
             shiny::p(links)
 
          ),
@@ -321,18 +310,12 @@ ui <- shiny::tagList(
             # Gender selector
             selectGenderUI(id = "sexo_internet",  var = eutic[["sexo"]]),
 
-            shiny::selectInput(
-               inputId = "nivel_educ_internet",
-               label = "Nivel educativo:",
-               choices = base::levels(eutic$nivel_educ),
-               selected = base::levels(eutic$nivel_educ),
-               multiple = TRUE
-            ),
+            # Educational level selector
+            selectEducLevel(id = "nivel_educ_internet", var = eutic[["nivel_educ"]]),
 
+            # Notes
             shiny::p(data_source),
-
             shiny::p(nota_quintiles),
-
             shiny::p(links)
 
          ),
