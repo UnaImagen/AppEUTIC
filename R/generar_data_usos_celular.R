@@ -11,7 +11,8 @@ generar_data_usos_celular <- function(.data, group_by_var) {
          usos_celular_llamadas
       ) %>%
       dplyr::summarise(
-         n = base::sum(peso_hogar, na.rm = TRUE)
+         n = base::sum(peso_hogar, na.rm = TRUE),
+         .groups = "drop_last"
       ) %>%
       dplyr::mutate(
          proporcion = n / base::sum(n, na.rm = TRUE)
@@ -28,7 +29,6 @@ generar_data_usos_celular <- function(.data, group_by_var) {
 
    aux_data %<>%
       dplyr::bind_rows(
-
          ## Genera data uso celular mensajes
          .data %>%
             dplyr::mutate(
@@ -53,7 +53,6 @@ generar_data_usos_celular <- function(.data, group_by_var) {
                tipo_uso = "mensajes",
                proporcion
             ),
-
          ## Genera data uso celular multimedia y redes
          .data %>%
             dplyr::mutate(
@@ -64,7 +63,8 @@ generar_data_usos_celular <- function(.data, group_by_var) {
                usos_celular_multimedia_y_redes
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                proporcion = n / base::sum(n, na.rm = TRUE)
@@ -78,7 +78,6 @@ generar_data_usos_celular <- function(.data, group_by_var) {
                tipo_uso = "multimedia y redes",
                proporcion
             ),
-
          ## Genera data uso celular buscar información
          .data %>%
             dplyr::mutate(
@@ -89,7 +88,8 @@ generar_data_usos_celular <- function(.data, group_by_var) {
                usos_celular_informacion
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                proporcion = n / base::sum(n, na.rm = TRUE)
@@ -103,7 +103,6 @@ generar_data_usos_celular <- function(.data, group_by_var) {
                tipo_uso = "informacion",
                proporcion
             ),
-
          ## Genera data uso celular compras
          .data %>%
             dplyr::mutate(
@@ -114,7 +113,8 @@ generar_data_usos_celular <- function(.data, group_by_var) {
                usos_celular_compras
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                proporcion = n / base::sum(n, na.rm = TRUE)
@@ -139,5 +139,4 @@ generar_data_usos_celular <- function(.data, group_by_var) {
          ),
          tipo_uso = forcats::as_factor(tipo_uso)
       )
-
 }

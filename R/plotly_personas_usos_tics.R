@@ -56,5 +56,4 @@ plotly_personas_usos_tics <- function(.data, group_by_var, plotly_legend_y = -0.
             "toggleSpikelines"
          )
       )
-
 }

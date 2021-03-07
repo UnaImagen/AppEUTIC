@@ -16,7 +16,8 @@ generar_data_usos_internet_por_tipo_de_uso <- function(.data, group_by_var, var_
          pattern_var
       ) %>%
       dplyr::summarise(
-         n = base::sum(peso_hogar, na.rm = TRUE)
+         n = base::sum(peso_hogar, na.rm = TRUE),
+         .groups = "drop_last"
       ) %>%
       dplyr::mutate(
          proporcion = n / base::sum(n, na.rm = TRUE)
@@ -49,7 +50,8 @@ generar_data_usos_internet_por_tipo_de_uso <- function(.data, group_by_var, var_
                   pattern_var
                ) %>%
                dplyr::summarise(
-                  n = base::sum(peso_hogar, na.rm = TRUE)
+                  n = base::sum(peso_hogar, na.rm = TRUE),
+                  .groups = "drop_last"
                ) %>%
                dplyr::mutate(
                   proporcion = n / base::sum(n, na.rm = TRUE)
@@ -68,7 +70,6 @@ generar_data_usos_internet_por_tipo_de_uso <- function(.data, group_by_var, var_
                   proporcion
                )
          )
-
    }
 
    aux_data %>%

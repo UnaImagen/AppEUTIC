@@ -27,7 +27,8 @@ plotly_hogares_cantidad_dispositivos <- function(.data, group_var_1, group_var_2
          group_var_2
       ) %>%
       dplyr::summarise(
-         n = base::sum(peso_hogar, na.rm = TRUE)
+         n = base::sum(peso_hogar, na.rm = TRUE),
+         .groups = "drop_last"
       ) %>%
       dplyr::mutate(
          prop = n / base::sum(n, na.rm = TRUE)
@@ -80,5 +81,4 @@ plotly_hogares_cantidad_dispositivos <- function(.data, group_var_1, group_var_2
             "toggleSpikelines"
          )
       )
-
 }
