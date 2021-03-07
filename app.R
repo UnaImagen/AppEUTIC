@@ -30,10 +30,9 @@ ui <- shiny::tagList(
 
    shiny::navbarPage(
 
+      # Navbar settings
       collapsible = TRUE,
-
       theme = shinythemes::shinytheme(theme = "flatly"),
-
       title = "EUTIC",
 
       # Tab: Hogares ------------------------------------------------------------
