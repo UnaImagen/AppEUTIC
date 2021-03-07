@@ -37,23 +37,5 @@ plotly_personas_usos_tics <- function(.data, group_by_var, plotly_legend_y = -0.
          ),
          hovermode = "x"
       ) %>%
-      plotly::config(
-         locale = "es",
-         displayModeBar = TRUE,
-         displaylogo = TRUE,
-         modeBarButtonsToRemove = base::c(
-            "zoom2d",
-            "zoomIn2d",
-            "zoomOut2d",
-            "select2d",
-            "drawclosedpath",
-            "lasso2d",
-            "pan2d",
-            "drawrect",
-            "autoScale2d",
-            "hoverClosestCartesian",
-            "hoverCompareCartesian",
-            "toggleSpikelines"
-         )
-      )
+      plotlyConfig()
 }
