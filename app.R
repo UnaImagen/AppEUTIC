@@ -180,6 +180,42 @@ ui <- shiny::tagList(
 # Server ------------------------------------------------------------------
 server <- function(input, output) {
 
+
+   # Server functions --------------------------------------------------------
+
+   # Filters for Hogares tab
+   filterHogaresTab <- function(.data) {
+      .data %>%
+         dplyr::filter(
+            localidad %in% input[["hogares_localidad"]],
+            ingresos_total %in% input[["hogares_ingresos"]]
+         )
+   }
+
+   # Filters for Personas tab
+   filterPersonasTab <- function(.data) {
+      .data %>%
+         dplyr::filter(
+            localidad %in% input[["localidad_personas"]],
+            ingresos_total %in% input[["ingresos_personas"]],
+            dplyr::between(edad, input[["edad_personas"]][1L], input[["edad_personas"]][2L]),
+            sexo %in% input[["sexo_personas"]],
+            nivel_educ %in% input[["nivel_educ_personas"]]
+         )
+   }
+
+   # Filters for Internet tab
+   filterInternetTab <- function(.data) {
+      .data %>%
+         dplyr::filter(
+            localidad %in% input[["localidad_internet"]],
+            ingresos_total %in% input[["ingresos_internet"]],
+            dplyr::between(edad, input[["edad_internet"]][1L], input[["edad_internet"]][2L]),
+            sexo %in% input[["sexo_internet"]],
+            nivel_educ %in% input[["nivel_educ_internet"]]
+         )
+   }
+
    # Tab: Hogares ------------------------------------------------------------
 
    # Section 1
@@ -195,10 +231,7 @@ server <- function(input, output) {
 
    output[["hogares_plot_uno"]] <- plotly::renderPlotly({
       eutic %>%
-         dplyr::filter(
-            localidad %in% input[["hogares_localidad"]],
-            ingresos_total %in% input[["hogares_ingresos"]]
-         ) %>%
+         filterHogaresTab() %>%
          plotly_hogares_tienen(
             group_var_1 = input[["hogares_graficar_segun"]],
             group_var_2 = input[["hogares"]]
@@ -221,10 +254,7 @@ server <- function(input, output) {
       if (input[["hogares"]] == "tiene_internet") {
 
          eutic %>%
-            dplyr::filter(
-               localidad %in% input[["hogares_localidad"]],
-               ingresos_total %in% input[["hogares_ingresos"]]
-            ) %>%
+            filterHogaresTab() %>%
             genera_data_tipo_conexion(
                group_by_var = input[["hogares_graficar_segun"]]
             ) %>%
@@ -235,10 +265,7 @@ server <- function(input, output) {
       } else {
 
          eutic %>%
-            dplyr::filter(
-               localidad %in% input[["hogares_localidad"]],
-               ingresos_total %in% input[["hogares_ingresos"]]
-            ) %>%
+            filterHogaresTab() %>%
             plotly_hogares_cantidad_dispositivos(
                group_var_1 = input[["hogares_graficar_segun"]],
                group_var_2 = input[["hogares"]]
@@ -264,13 +291,7 @@ server <- function(input, output) {
       if (input[["personas"]] == "uso_internet") {
 
          eutic %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_personas"]],
-               ingresos_total %in% input[["ingresos_personas"]],
-               dplyr::between(edad, input[["edad_personas"]][1L], input[["edad_personas"]][2L]),
-               sexo %in% input[["sexo_personas"]],
-               nivel_educ %in% input[["nivel_educ_personas"]]
-            ) %>%
+            filterPersonasTab() %>%
             plotly_personas_uso_tic(
                group_var_1 = input[["personas_graficar_segun"]],
                group_var_2 = "uso_internet"
@@ -279,13 +300,7 @@ server <- function(input, output) {
       } else {
 
          eutic %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_personas"]],
-               ingresos_total %in% input[["ingresos_personas"]],
-               dplyr::between(edad, input[["edad_personas"]][1L], input[["edad_personas"]][2L]),
-               sexo %in% input[["sexo_personas"]],
-               nivel_educ %in% input[["nivel_educ_personas"]]
-            ) %>%
+            filterPersonasTab() %>%
             plotly_personas_uso_tic(
                group_var_1 = input$personas_graficar_segun,
                group_var_2 = input$personas
@@ -313,13 +328,7 @@ server <- function(input, output) {
                uso_internet == "Sí"
             ) %>%
             base::droplevels() %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_personas"]],
-               ingresos_total %in% input[["ingresos_personas"]],
-               dplyr::between(edad, input[["edad_personas"]][1L], input[["edad_personas"]][2L]),
-               sexo %in% input[["sexo_personas"]],
-               nivel_educ %in% input[["nivel_educ_personas"]]
-            ) %>%
+            filterPersonasTab() %>%
             plotly_personas_uso_tic(
                group_var_1 = input[["personas_graficar_segun"]],
                group_var_2 = "frecuencia_uso_internet_celular"
@@ -332,13 +341,7 @@ server <- function(input, output) {
                uso_internet == "Sí"
             ) %>%
             base::droplevels() %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_personas"]],
-               ingresos_total %in% input[["ingresos_personas"]],
-               dplyr::between(edad, input[["edad_personas"]][1L], input[["edad_personas"]][2L]),
-               sexo %in% input[["sexo_personas"]],
-               nivel_educ %in% input[["nivel_educ_personas"]]
-            ) %>%
+            filterPersonasTab() %>%
             plotly_personas_uso_tic(
                group_var_1 = input[["personas_graficar_segun"]],
                group_var_2 = "frecuencia_uso_internet"
@@ -362,13 +365,7 @@ server <- function(input, output) {
       if (input[["personas"]] == "uso_celular") {
 
          eutic %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_personas"]],
-               ingresos_total %in% input[["ingresos_personas"]],
-               dplyr::between(edad, input[["edad_personas"]][1L], input[["edad_personas"]][2L]),
-               sexo %in% input[["sexo_personas"]],
-               nivel_educ %in% input[["nivel_educ_personas"]]
-            ) %>%
+            filterPersonasTab() %>%
             generar_data_usos_celular(
                group_by_var = input[["personas_graficar_segun"]]
             ) %>%
@@ -379,13 +376,7 @@ server <- function(input, output) {
       } else if (input[["personas"]] == "uso_internet") {
 
          eutic %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_personas"]],
-               ingresos_total %in% input[["ingresos_personas"]],
-               dplyr::between(edad, input[["edad_personas"]][1L], input[["edad_personas"]][2L]),
-               sexo %in% input[["sexo_personas"]],
-               nivel_educ %in% input[["nivel_educ_personas"]]
-            ) %>%
+            filterPersonasTab() %>%
             generar_data_usos_internet(
                group_by_var = input[["personas_graficar_segun"]]
             ) %>%
@@ -415,13 +406,7 @@ server <- function(input, output) {
    output[["internet_plot_uno"]] <- plotly::renderPlotly({
 
       eutic %>%
-         dplyr::filter(
-            localidad %in% input[["localidad_internet"]],
-            ingresos_total %in% input[["ingresos_internet"]],
-            dplyr::between(edad, input[["edad_internet"]][1L], input[["edad_internet"]][2L]),
-            sexo %in% input[["sexo_internet"]],
-            nivel_educ %in% input[["nivel_educ_internet"]]
-         ) %>%
+         filterInternetTab() %>%
          generar_data_usos_internet_por_tipo_de_uso(
             group_by_var = input[["internet_graficar_segun"]],
             var_pattern = input[["internet"]],
@@ -453,13 +438,7 @@ server <- function(input, output) {
                usos_internet_laboral == "Sí"
             ) %>%
             base::droplevels() %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_internet"]],
-               ingresos_total %in% input[["ingresos_internet"]],
-               dplyr::between(edad, input[["edad_internet"]][1L], input[["edad_internet"]][2L]),
-               sexo %in% input[["sexo_internet"]],
-               nivel_educ %in% input[["nivel_educ_internet"]]
-            ) %>%
+            filterInternetTab() %>%
             plotly_personas_uso_tic(
                group_var_1 = input[["internet_graficar_segun"]],
                group_var_2 = "usos_internet_laboral_dificultad"
@@ -472,13 +451,7 @@ server <- function(input, output) {
                usos_internet_comms_redes == "Sí"
             ) %>%
             base::droplevels() %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_internet"]],
-               ingresos_total %in% input[["ingresos_internet"]],
-               dplyr::between(edad, input[["edad_internet"]][1L], input[["edad_internet"]][2]),
-               sexo %in% input[["sexo_internet"]],
-               nivel_educ %in% input[["nivel_educ_internet"]]
-            ) %>%
+            filterInternetTab() %>%
             plotly_personas_uso_tic(
                group_var_1 = input[["internet_graficar_segun"]],
                group_var_2 = "frecuencia_uso_redes_sociales"
@@ -487,13 +460,7 @@ server <- function(input, output) {
       } else if (input[["internet"]] == "_ocio_") {
 
          eutic %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_internet"]],
-               ingresos_total %in% input[["ingresos_internet"]],
-               dplyr::between(edad, input[["edad_internet"]][1L], input[["edad_internet"]][2L]),
-               sexo %in% input[["sexo_internet"]],
-               nivel_educ %in% input[["nivel_educ_internet"]]
-            ) %>%
+            filterInternetTab() %>%
             generar_data_usos_internet_por_tipo_de_uso(
                group_by_var = input[["internet_graficar_segun"]],
                var_pattern = "_canales_",
@@ -506,13 +473,7 @@ server <- function(input, output) {
       } else if (input[["internet"]] == "_comercio_") {
 
          eutic %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_internet"]],
-               ingresos_total %in% input[["ingresos_internet"]],
-               dplyr::between(edad, input[["edad_internet"]][1L], input[["edad_internet"]][2]),
-               sexo %in% input[["sexo_internet"]],
-               nivel_educ %in% input[["nivel_educ_internet"]]
-            ) %>%
+            filterInternetTab() %>%
             generar_data_usos_internet_por_tipo_de_uso(
                group_by_var = input[["internet_graficar_segun"]],
                var_pattern = "_medios_",
@@ -539,13 +500,7 @@ server <- function(input, output) {
       if (input[["internet"]] == "_comms_") {
 
          eutic %>%
-            dplyr::filter(
-               localidad %in% input[["localidad_internet"]],
-               ingresos_total %in% input[["ingresos_internet"]],
-               dplyr::between(edad, input[["edad_internet"]][1L], input[["edad_internet"]][2L]),
-               sexo %in% input[["sexo_internet"]],
-               nivel_educ %in% input[["nivel_educ_internet"]]
-            ) %>%
+            filterInternetTab() %>%
             generar_data_usos_internet_por_tipo_de_uso(
                group_by_var = input[["internet_graficar_segun"]],
                var_pattern = "_redes_",
