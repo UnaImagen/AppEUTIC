@@ -52,7 +52,7 @@ ui <- shiny::tagList(
             # Plot-by selector
             selectPlotByUI(id = "hogares_graficar_segun"),
             # Locality selector
-            selectLocalityUI(id = "hogares_localidad", levels = base::levels(eutic[["localidad"]])),
+            selectLocalityUI(id = "hogares_localidad", var = eutic[["localidad"]]),
             # Income level selector
             selectIncomeLevelUI(id = "hogares_ingresos", levels = base::levels(eutic[["ingresos_total"]])),
             # Notes
@@ -90,7 +90,7 @@ ui <- shiny::tagList(
             # Plot-by selector
             selectPlotByUI(id = "personas_graficar_segun"),
             # Locality selector
-            selectLocalityUI(id = "localidad_personas", levels = base::levels(eutic[["localidad"]])),
+            selectLocalityUI(id = "localidad_personas", var = eutic[["localidad"]]),
             # Income level selector
             selectIncomeLevelUI(id = "ingresos_personas", levels = base::levels(eutic[["ingresos_total"]])),
             # Age selector
@@ -136,7 +136,7 @@ ui <- shiny::tagList(
             # Plot-by selector
             selectPlotByUI(id = "internet_graficar_segun"),
             # Locality selector
-            selectLocalityUI(id = "localidad_internet", levels = base::levels(eutic[["localidad"]])),
+            selectLocalityUI(id = "localidad_internet", var = eutic[["localidad"]]),
             # Income level selector
             selectIncomeLevelUI(id = "ingresos_internet", levels = base::levels(eutic[["ingresos_total"]])),
             # Age selector

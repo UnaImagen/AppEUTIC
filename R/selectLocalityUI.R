@@ -1,9 +1,9 @@
-selectLocalityUI <- function(id, levels) {
+selectLocalityUI <- function(id, var) {
    shiny::selectInput(
       inputId = id,
       label = "Localidad:",
-      choices = levels,
-      selected = levels,
+      choices = base::levels(var),
+      selected = base::levels(var),
       multiple = TRUE
    )
 }
