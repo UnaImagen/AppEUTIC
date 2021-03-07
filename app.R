@@ -29,8 +29,6 @@ links <- shiny::HTML(
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
 
-   shiny::includeCSS(path = "style.css"),
-
    shiny::navbarPage(
 
       collapsible = TRUE,
