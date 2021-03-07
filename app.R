@@ -190,13 +190,8 @@ ui <- shiny::tagList(
             # Age selector
             selectAgeUI(id = "edad_personas", var = eutic[["edad"]]),
 
-            shiny::selectInput(
-               inputId = "sexo_personas",
-               label = "Sexo:",
-               choices = base::levels(eutic$sexo),
-               selected = base::levels(eutic$sexo),
-               multiple = TRUE
-            ),
+            # Gender selector
+            selectGenderUI(id = "sexo_personas",  var = eutic[["sexo"]]),
 
             shiny::selectInput(
                inputId = "nivel_educ_personas",
@@ -323,13 +318,8 @@ ui <- shiny::tagList(
             # Age selector
             selectAgeUI(id = "edad_internet", var = eutic[["edad"]]),
 
-            shiny::selectInput(
-               inputId = "sexo_internet",
-               label = "Sexo:",
-               choices = base::levels(eutic$sexo),
-               selected = base::levels(eutic$sexo),
-               multiple = TRUE
-            ),
+            # Gender selector
+            selectGenderUI(id = "sexo_internet",  var = eutic[["sexo"]]),
 
             shiny::selectInput(
                inputId = "nivel_educ_internet",
