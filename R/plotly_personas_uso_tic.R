@@ -35,7 +35,8 @@ plotly_personas_uso_tic <- function(.data, group_var_1, group_var_2) {
          colors = colors,
          type = "bar",
          hovertemplate = ~base::paste0(
-            "%{y:0.2%}"
+            "%{y:0.2%}",
+            "<extra></extra>"
          )
       ) %>%
       plotly::layout(

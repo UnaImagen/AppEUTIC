@@ -15,7 +15,8 @@ plotly_tipo_conexion <- function(.data, group_by_var) {
          colors = "Accent",
          type = "bar",
          hovertemplate = ~base::paste0(
-            "%{y:0.2%}"
+            "%{y:0.2%}",
+            "<extra></extra>"
          )
       ) %>%
       plotly::layout(

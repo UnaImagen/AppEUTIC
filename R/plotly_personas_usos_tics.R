@@ -17,7 +17,8 @@ plotly_personas_usos_tics <- function(.data, group_by_var) {
          colors = "Set3",
          type = "bar",
          hovertemplate = ~base::paste0(
-            "%{y:0.2%}"
+            "%{y:0.2%}",
+            "<extra></extra>"
          )
       ) %>%
       plotly::layout(
