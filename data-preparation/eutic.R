@@ -6,7 +6,7 @@ library(magrittr)
 
 # Carga datos -------------------------------------------------------------
 eutic <- haven::read_sav(
-   file = here::here("BASE HOGARES Y PERSONAS EUTIC 2016.sav")
+   file = here::here("data-preparation/BASE HOGARES Y PERSONAS EUTIC 2016.sav")
 ) %>%
    dplyr::rename_all(
       .funs = tolower
@@ -346,7 +346,7 @@ eutic %<>%
 
    )
 
-readr::write_rds(x = eutic, path = "eutic.rds")
+readr::write_rds(x = eutic, file = here::here("eutic.rds"))
 
 #===============#
 #### THE END ####
