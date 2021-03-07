@@ -15,7 +15,8 @@ plotly_tipo_conexion <- function(.data, group_by_var) {
          colors = "Accent",
          type = "bar",
          hovertemplate = ~base::paste0(
-            "%{y:0.2%}"
+            "%{y:0.2%}",
+            "<extra></extra>"
          )
       ) %>%
       plotly::layout(
@@ -25,15 +26,9 @@ plotly_tipo_conexion <- function(.data, group_by_var) {
          yaxis = base::list(
             title = "<b>Porcentaje de los hogares</b>",
             tickformat = "%"
-         ),
-         legend = base::list(
-            bgcolor = "#E2E2E2",
-            orientation = "h",
-            yanchor = "bottom",
-            xanchor = "left",
-            y = -.40
-         ),
-         hovermode = "x"
+         )
       ) %>%
+      plotlyLayout() %>%
+      plotlyLegend(y = -0.40) %>%
       plotlyConfig()
 }

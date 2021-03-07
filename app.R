@@ -29,6 +29,7 @@ links <- shiny::HTML(
 ui <- shiny::tagList(
 
    tags$head(
+      tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
       tags$link(rel = "shortcut icon", type = "image/png", href = "favicon.png")
    ),
 

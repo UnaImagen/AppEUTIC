@@ -42,7 +42,8 @@ plotly_hogares_cantidad_dispositivos <- function(.data, group_var_1, group_var_2
          colors = "Accent",
          type = "bar",
          hovertemplate = ~base::paste0(
-            "%{y:0.2%}"
+            "%{y:0.2%}",
+            "<extra></extra>"
          )
       ) %>%
       plotly::layout(
@@ -52,15 +53,9 @@ plotly_hogares_cantidad_dispositivos <- function(.data, group_var_1, group_var_2
          yaxis = base::list(
             title = "<b>Porcentaje de los hogares</b>",
             tickformat = "%"
-         ),
-         legend = base::list(
-            bgcolor = "#E2E2E2",
-            orientation = "h",
-            yanchor = "bottom",
-            xanchor = "left",
-            y = -.30
-         ),
-         hovermode = "x"
+         )
       ) %>%
+      plotlyLayout() %>%
+      plotlyLegend() %>%
       plotlyConfig()
 }

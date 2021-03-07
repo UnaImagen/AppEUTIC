@@ -1,5 +1,5 @@
 ## Genera plot de uso de tics por personas
-plotly_personas_uso_tic <- function(.data, group_var_1, group_var_2, plotly_legend_y = -0.60) {
+plotly_personas_uso_tic <- function(.data, group_var_1, group_var_2) {
 
    colors <- dplyr::if_else(group_var_2 %in% base::c("frecuencia_uso_internet", "frecuencia_uso_internet_celular"), "Accent", "Paired")
 
@@ -35,7 +35,8 @@ plotly_personas_uso_tic <- function(.data, group_var_1, group_var_2, plotly_lege
          colors = colors,
          type = "bar",
          hovertemplate = ~base::paste0(
-            "%{y:0.2%}"
+            "%{y:0.2%}",
+            "<extra></extra>"
          )
       ) %>%
       plotly::layout(
@@ -45,15 +46,9 @@ plotly_personas_uso_tic <- function(.data, group_var_1, group_var_2, plotly_lege
          yaxis = base::list(
             title = "<b>Porcentaje de las personas</b>",
             tickformat = "%"
-         ),
-         legend = base::list(
-            bgcolor = "#E2E2E2",
-            orientation = "h",
-            yanchor = "bottom",
-            xanchor = "left",
-            y = plotly_legend_y
-         ),
-         hovermode = "x"
+         )
       ) %>%
+      plotlyLayout() %>%
+      plotlyLegend(y = -0.60) %>%
       plotlyConfig()
 }
