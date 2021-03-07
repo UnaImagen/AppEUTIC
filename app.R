@@ -160,7 +160,7 @@ ui <- shiny::tagList(
             selectGenderUI(id = "sexo_personas",  var = eutic[["sexo"]]),
 
             # Educational level selector
-            selectEducLevel(id = "nivel_educ_personas", var = eutic[["nivel_educ"]]),
+            selectEducLevelUI(id = "nivel_educ_personas", var = eutic[["nivel_educ"]]),
 
             # Notes
             shiny::p(data_source),
@@ -265,7 +265,7 @@ ui <- shiny::tagList(
             selectGenderUI(id = "sexo_internet",  var = eutic[["sexo"]]),
 
             # Educational level selector
-            selectEducLevel(id = "nivel_educ_internet", var = eutic[["nivel_educ"]]),
+            selectEducLevelUI(id = "nivel_educ_internet", var = eutic[["nivel_educ"]]),
 
             # Notes
             shiny::p(data_source),

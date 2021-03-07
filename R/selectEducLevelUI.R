@@ -1,4 +1,4 @@
-selectEducLevel <- function(id, var) {
+selectEducLevelUI <- function(id, var) {
    shiny::selectInput(
       inputId = id,
       label = "Nivel educativo:",
