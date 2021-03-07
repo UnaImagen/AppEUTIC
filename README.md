@@ -1,6 +1,7 @@
 # AppEUTIC
 
 ![stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)
+![release](https://img.shields.io/github/v/release/daczarne/AppEUTIC)
 
 ![github repo size](https://img.shields.io/github/repo-size/daczarne/AppEUTIC)
 ![github code size](https://img.shields.io/github/languages/code-size/daczarne/AppEUTIC)

@@ -11,7 +11,8 @@ genera_data_tipo_conexion <- function(.data, group_by_var) {
          banda_ancha_fija
       ) %>%
       dplyr::summarise(
-         n = base::sum(peso_hogar, na.rm = TRUE)
+         n = base::sum(peso_hogar, na.rm = TRUE),
+         .groups = "drop_last"
       ) %>%
       dplyr::mutate(
          prop = n / base::sum(n, na.rm = TRUE)
@@ -27,7 +28,6 @@ genera_data_tipo_conexion <- function(.data, group_by_var) {
       )
 
    aux_data %<>%
-
       ## Hogares con Banda Ancha Móvil
       dplyr::bind_rows(
          .data %>%
@@ -39,7 +39,8 @@ genera_data_tipo_conexion <- function(.data, group_by_var) {
                banda_ancha_movil
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                prop = n / base::sum(n, na.rm = TRUE)
@@ -53,7 +54,6 @@ genera_data_tipo_conexion <- function(.data, group_by_var) {
                tipo_conexion = "banda_ancha_movil",
                prop = prop
             ),
-
          ## Hogares con otros tipos de conexión
          .data %>%
             dplyr::filter(
@@ -64,7 +64,8 @@ genera_data_tipo_conexion <- function(.data, group_by_var) {
                otra_conexion
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                prop = n / base::sum(n, na.rm = TRUE)
@@ -78,7 +79,6 @@ genera_data_tipo_conexion <- function(.data, group_by_var) {
                tipo_conexion = "otra_conexion",
                prop = prop
             )
-
       ) %>%
       dplyr::mutate(
          tipo_conexion = dplyr::case_when(
@@ -88,5 +88,4 @@ genera_data_tipo_conexion <- function(.data, group_by_var) {
          ),
          tipo_conexion = forcats::as_factor(tipo_conexion)
       )
-
 }

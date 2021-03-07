@@ -54,5 +54,4 @@ plotly_tipo_conexion <- function(.data, group_by_var) {
             "toggleSpikelines"
          )
       )
-
 }

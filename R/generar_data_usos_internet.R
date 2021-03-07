@@ -11,7 +11,8 @@ generar_data_usos_internet <- function(.data, group_by_var) {
          usos_internet_comms
       ) %>%
       dplyr::summarise(
-         n = base::sum(peso_hogar, na.rm = TRUE)
+         n = base::sum(peso_hogar, na.rm = TRUE),
+         .groups = "drop_last"
       ) %>%
       dplyr::mutate(
          proporcion = n / base::sum(n, na.rm = TRUE)
@@ -28,7 +29,6 @@ generar_data_usos_internet <- function(.data, group_by_var) {
 
    aux_data %<>%
       dplyr::bind_rows(
-
          ## Genera data uso celular mensajes
          .data %>%
             dplyr::mutate(
@@ -39,7 +39,8 @@ generar_data_usos_internet <- function(.data, group_by_var) {
                usos_internet_laboral
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                proporcion = n / base::sum(n, na.rm = TRUE)
@@ -53,7 +54,6 @@ generar_data_usos_internet <- function(.data, group_by_var) {
                tipo_uso = "laboral",
                proporcion
             ),
-
          ## Genera data uso celular multimedia y redes
          .data %>%
             dplyr::mutate(
@@ -64,7 +64,8 @@ generar_data_usos_internet <- function(.data, group_by_var) {
                usos_internet_estudio
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                proporcion = n / base::sum(n, na.rm = TRUE)
@@ -78,7 +79,6 @@ generar_data_usos_internet <- function(.data, group_by_var) {
                tipo_uso = "estudio",
                proporcion
             ),
-
          ## Genera data uso celular buscar información
          .data %>%
             dplyr::mutate(
@@ -89,7 +89,8 @@ generar_data_usos_internet <- function(.data, group_by_var) {
                usos_internet_ocio
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                proporcion = n / base::sum(n, na.rm = TRUE)
@@ -103,7 +104,6 @@ generar_data_usos_internet <- function(.data, group_by_var) {
                tipo_uso = "ocio",
                proporcion
             ),
-
          ## Genera data uso celular compras
          .data %>%
             dplyr::mutate(
@@ -114,7 +114,8 @@ generar_data_usos_internet <- function(.data, group_by_var) {
                usos_internet_otro
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                proporcion = n / base::sum(n, na.rm = TRUE)
@@ -139,5 +140,4 @@ generar_data_usos_internet <- function(.data, group_by_var) {
          ),
          tipo_uso = forcats::as_factor(tipo_uso)
       )
-
 }
