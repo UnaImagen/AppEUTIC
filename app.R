@@ -5,7 +5,7 @@
 library(shiny, quietly = TRUE)
 library(magrittr, quietly = TRUE)
 
-eutic <- readr::read_rds(path = "eutic.rds")
+eutic <- readr::read_rds(file = "eutic.rds")
 
 title <- "Encuesta de Usos de las Tecnologías de la Información y Comunicación (2016)"
 
@@ -25,10 +25,6 @@ links <- shiny::HTML(
    <a href="https://danielczarnievicz.netlify.app/portfolio/"><i class="fas fa-home"></i></a>&nbsp;'
 )
 
-source(
-   file = "www/funciones_app.R",
-   encoding = "UTF-8"
-)
 
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
