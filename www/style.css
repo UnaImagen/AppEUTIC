@@ -1,3 +1,7 @@
+body {
+   background-color: #f5f5f5 !important;
+}
+
 .questionDiv {
    background-color: #ece7f2;
    padding: 8px;
