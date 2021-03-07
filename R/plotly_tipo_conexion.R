@@ -26,8 +26,7 @@ plotly_tipo_conexion <- function(.data, group_by_var) {
          yaxis = base::list(
             title = "<b>Porcentaje de los hogares</b>",
             tickformat = "%"
-         ),
-         hovermode = "x"
+         )
       ) %>%
       plotlyLayout() %>%
       plotlyLegend(y = -0.40) %>%

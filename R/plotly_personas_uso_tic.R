@@ -46,8 +46,7 @@ plotly_personas_uso_tic <- function(.data, group_var_1, group_var_2) {
          yaxis = base::list(
             title = "<b>Porcentaje de las personas</b>",
             tickformat = "%"
-         ),
-         hovermode = "x"
+         )
       ) %>%
       plotlyLayout() %>%
       plotlyLegend(y = -0.60) %>%

@@ -53,8 +53,7 @@ plotly_hogares_cantidad_dispositivos <- function(.data, group_var_1, group_var_2
          yaxis = base::list(
             title = "<b>Porcentaje de los hogares</b>",
             tickformat = "%"
-         ),
-         hovermode = "x"
+         )
       ) %>%
       plotlyLayout() %>%
       plotlyLegend() %>%
