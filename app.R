@@ -272,7 +272,7 @@ server <- function(input, output) {
                nivel_educ %in% input[["nivel_educ_personas"]]
             ) %>%
             plotly_personas_uso_tic(
-               group_var_1 = input$personas_graficar_segun,
+               group_var_1 = input[["personas_graficar_segun"]],
                group_var_2 = "uso_internet"
             )
 
@@ -296,7 +296,7 @@ server <- function(input, output) {
    })
 
    # Section 2
-   output$personas_texto_pregunta_dos <- shiny::renderText({
+   output[["personas_texto_pregunta_dos"]] <- shiny::renderText({
       texto_pregunta <- dplyr::case_when(
          input[["personas"]] == "uso_celular" ~ "¿Con qué frecuencia utilizó Internet en el celular en los últimos 3 meses? (para quienes lo utilizaron)",
          input[["personas"]] == "uso_internet" ~ "¿Con qué frecuencia utilizó Internet en los últimos 3 meses? (para quienes lo utilizaron)"
@@ -304,7 +304,7 @@ server <- function(input, output) {
       glue::glue("Pregunta: {texto_pregunta}")
    })
 
-   output$personas_plot_dos <- plotly::renderPlotly({
+   output[["personas_plot_dos"]] <- plotly::renderPlotly({
 
       if (input[["personas"]] == "uso_celular") {
 
@@ -321,7 +321,7 @@ server <- function(input, output) {
                nivel_educ %in% input[["nivel_educ_personas"]]
             ) %>%
             plotly_personas_uso_tic(
-               group_var_1 = input$personas_graficar_segun,
+               group_var_1 = input[["personas_graficar_segun"]],
                group_var_2 = "frecuencia_uso_internet_celular"
             )
 
@@ -340,7 +340,7 @@ server <- function(input, output) {
                nivel_educ %in% input[["nivel_educ_personas"]]
             ) %>%
             plotly_personas_uso_tic(
-               group_var_1 = input$personas_graficar_segun,
+               group_var_1 = input[["personas_graficar_segun"]],
                group_var_2 = "frecuencia_uso_internet"
             )
 
