@@ -83,26 +83,19 @@ ui <- shiny::tagList(
                inline = TRUE
             ),
 
-            shiny::selectInput(
-               inputId = "hogares_localidad",
-               label = "Localidad:",
-               choices = base::levels(eutic$localidad),
-               selected = base::levels(eutic$localidad),
-               multiple = TRUE
-            ),
+            # Locality selector
+            selectLocalityUI(id = "hogares_localidad", levels = base::levels(eutic[["localidad"]])),
 
-            shiny::selectInput(
-               inputId = "hogares_ingresos",
-               label = "Nivel de ingresos del hogar:",
-               choices = base::levels(eutic$ingresos_total),
-               selected = base::levels(eutic$ingresos_total),
-               multiple = TRUE
-            ),
+            # Income level selector
+            selectIncomeLevelUI(id = "hogares_ingresos", levels = base::levels(eutic[["ingresos_total"]])),
 
+            # Data source
             shiny::p(data_source),
 
+            # Note
             shiny::p(nota_quintiles),
 
+            # Links
             shiny::p(links),
 
             shiny::icon(" ")
@@ -188,21 +181,11 @@ ui <- shiny::tagList(
                inline = TRUE
             ),
 
-            shiny::selectInput(
-               inputId = "localidad_personas",
-               label = "Localidad:",
-               choices = base::levels(eutic$localidad),
-               selected = base::levels(eutic$localidad),
-               multiple = TRUE
-            ),
+            # Locality selector
+            selectLocalityUI(id = "localidad_personas", levels = base::levels(eutic[["localidad"]])),
 
-            shiny::selectInput(
-               inputId = "ingresos_personas",
-               label = "Nivel de ingresos del hogar:",
-               choices = base::levels(eutic$ingresos_total),
-               selected = base::levels(eutic$ingresos_total),
-               multiple = TRUE
-            ),
+            # Income level selector
+            selectIncomeLevelUI(id = "ingresos_personas", levels = base::levels(eutic[["ingresos_total"]])),
 
             shiny::sliderInput(
                inputId = "edad_personas",
@@ -341,21 +324,11 @@ ui <- shiny::tagList(
                inline = TRUE
             ),
 
-            shiny::selectInput(
-               inputId = "localidad_internet",
-               label = "Localidad:",
-               choices = base::levels(eutic$localidad),
-               selected = base::levels(eutic$localidad),
-               multiple = TRUE
-            ),
+            # Locality selector
+            selectLocalityUI(id = "localidad_internet", levels = base::levels(eutic[["localidad"]])),
 
-            shiny::selectInput(
-               inputId = "ingresos_internet",
-               label = "Nivel de ingresos del hogar:",
-               choices = base::levels(eutic$ingresos_total),
-               selected = base::levels(eutic$ingresos_total),
-               multiple = TRUE
-            ),
+            # Income level selector
+            selectIncomeLevelUI(id = "ingresos_internet", levels = base::levels(eutic[["ingresos_total"]])),
 
             shiny::sliderInput(
                inputId = "edad_internet",
