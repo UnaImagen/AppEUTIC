@@ -39,7 +39,8 @@ generar_data_usos_celular <- function(.data, group_by_var) {
                usos_celular_mensajes
             ) %>%
             dplyr::summarise(
-               n = base::sum(peso_hogar, na.rm = TRUE)
+               n = base::sum(peso_hogar, na.rm = TRUE),
+               .groups = "drop_last"
             ) %>%
             dplyr::mutate(
                proporcion = n / base::sum(n, na.rm = TRUE)
